@@ -1,0 +1,21 @@
+E 1.2:
+    a)  eip1: 0x80483c1
+        eip2: 0x80483cb
+        => eip2 - eip1 = 0xa Byte = 10d Byte
+    b)  Ja
+
+E 1.3:
+    a)  Little Endian
+    b)  d[0]
+
+E 1.4:
+        ?
+
+E 1.5:
+    a)   a: 4
+         x: 12
+         s: 4
+        *s: 1
+        "Hallo Welt!": 12
+    b)  Weil *s ein Pointer ist und dieser die Startadresse des Strings enthält
+    c)  Weil auf den String noch ein Zeichen folgt, das das Ende des Strings markiert.
