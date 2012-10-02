@@ -1,0 +1,123 @@
+***********************************************************************************************************
+Rest OS und Hardware
+***********************************************************************************************************
+weiteres assembler beispiel angeschaut:
+    - wie if-else- / while-Schleifen funktionieren
+        cmpl: compare long
+        jle: jump if lower or equal
+        mov: move (von x-adresse nach y-adresse)
+        jmp: jump (unkonditioneller sprung)
+
+Funktionsweise Stack:
+- Heap: "Haufen", "nicht so organisiert"
+- Stack: "Sauberer Stapel"
+    - Stack Frame (ein Eintrag im Stack)
+    - wächst von unten nach oben
+    - Stack-Pointer (zeigt auf aktuelles Stack Frame) -> eigenes Register für Stack-Pointer
+
+Unterprogramme:
+- Prozeduren / Funktionen / Methoden -> Zu Unterprogrammen übersetzt in Assembler
+- Oberprogramm -> Unterprogramm 1 -> Unterprogramm 2
+- Kontext soll pro Programm gewechselt werden (Variable x in Methode a ist nicht gleich Variable x in Methode b) -> Stack zur Realisierung (1 Stack-Frame pro Unterprogramm)
+- Stack-Frame enthält:
+    - Aufrufparameter
+    - lokale Variablen
+    - Rückgabewert
+    - Rücksprungadresse (damit man weiss, wo man hin muss, wenn dieses Unterprogramm fertig ausgeführt ist)
+- Assembler-Befehle:
+    - JSR (Jump SubRoutine): Unterprogramm aufrufen, neues Stackframe
+    - RET: Zurück zu Oberrogramm, ein Stackframe zurück
+- Warum Unterprogramme:
+    - C-Libs müssen nicht immer mitkompiliert werden
+    - Rekursion wird einfacher (nur neues Stack Frame, sonst müsste man ja den Kontext-Switch selber machen (y ist nicht mehr gleich y))
+    - Multithreading wäre sonst kaum möglich (ohne eigenen Kontext pro Thread)
+
+
+Call-by-Value / Call-by-Reference:
+- C:
+    - Standardmässig Call-by-Value für primitive Variablen
+    - Pointer: Call-by-Reference (also für komplexe Variablen, oder mittels *varname für primitive Variablen)
+- Hat auch irgend nen Zusammenhang mit dem Kontextswitch oder?
+
+
+***********************************************************************************************************
+Prozesse
+***********************************************************************************************************
+Parallelverarbeitung:
+    - hardwaremässig (mehrere CPUs, z.B. kann aber auch immer gleichzeitig von der Harddisk gelesen werden, wenn die CPU rechnet)
+    - softwaremässig (mehrere Prozesse teilen sich CPU)
+        - wechseln sich regelmässig (schnell) ab, so dass man es kaum merkt -> behandeln wir jetzt
+        - Threads / Fibres -> haben untereinander Prioritäten, wechseln sich ab, wenn andere warten müssen -> nächstes Semester
+
+
+Mehrere Prozesse:
+- Wir befinden uns in der OS-Welt, nicht mehr in der Hardware-Welt
+- Automatische Prozessumschaltung vom Betriebssystem
+- PCB (Program Control Block) -> gesamter Zustand eines Programms zu einem bestimmten Zeitpunkt (gespeichert, damit Prozess wieder fortgeführt werden kann nach Prozessumschaltung)
+- Wechseln des Prozesses:
+    - Prozess A stoppen
+    - Zustand Prozess A speichern
+    - Zustand Prozess B laden
+    - Prozess B ausführen
+- Auch Betriebssystem braucht Prozess(e)
+
+
+Ausführbare Datei:
+- Programmcode (Logik)
+- Infos Speicherbelegung (z.B. für Konstanten)
+- Initialwerte (für Variablen / Konstanten)
+- Ausführung:
+    - Programm laden (Programm in RAM laden)
+    - Initialisierung (Speicher allozieren, Initialwerte besetzen, Prozesse aufsetzten)
+    - Starten (Programm-Counter auf 1. Instruktion setzen)
+    - Programmablauf (Konkurrierung mit anderen Prozessen)
+    - Bendigung (Return-Wert, Speicherfreigabe, PCB löschen)
+
+Prozesse starten:
+- Verkettung (chain): Nacheinander
+- Vergabelung (fork): Duplizierung und auf unterschiedliche Weise fortfahren
+- Erzeugung (create): Völlig neuen Prozess erstellen, momentaner Prozess existiert weiter
+- Unix kann nur fork und chain
+- Prozesse vereinigen: join/exit
+- Befehle:
+    - exec() für chain
+    - fork() für fork (Rückgabewert sagt, ob man child (0) ist, oder parent (prozess-ID, pid von parent))
+    - wait() um auf anderen Prozess zu warten
+    - exit() um Prozess zu beenden
+- Beispiel für fork:
+    - Webserver
+    - Wartet auf Port 80
+    - Port 80 soll aber nicht für neue Anfragen blockiert werden
+    -> Lösung: Parent-Prozess, der auf neue Anfragen hört. Child-Prozess pro Anfrage
+- Zombieprozess:
+    - Wenn der Parent-Prozess wait() aufruft, der entsprechende Child-Prozess aber schon exit() aufgerufen hat -> Eltern-Prozess wartet ewig
+    - Oder: Wenn Parent-Prozess Child-Prozess erstellt und sich dann beendet -> Child-Prozess kann niemandem returnen (Waise-Prozess), kann aber noch weiterlaufen
+
+
+Scheduling:
+- Prozesse sind oft am warten -> Problem im quasiparallelen System, denn dann ver(sch)wenden die Prozesse ihren Rechenanteil ja zum Warten
+- Deshalb: Scheduling
+- Prozesse können im Scheduling 4 Zustände haben: Waiting, Running, Ready, Inactive
+- Verdrängendes Scheduling: Betriebssystem zwingt Prozess zu stoppen -> "von laufend nach bereit" oder "von inaktiv nach bereit"
+- Fifo: Einfache Fifo-Chain, nächster Prozess startet, wenn erster wartet (es wird aber nicht verdrängt)
+- RoundRobin: Alle 40 (Beispiel) Zeiteinheiten wird Prozess gewechselt (Verdrängende Strategie), oder natütlich, wenn er eh fertig ist
+- LevelPriority: Priorisierung der Prozesse untereinander. Sobald ein Prozess wartet, kommt der höchstpriorisierte Wartende dran 
+- MLV-Chain (Multi Level Feedback): Ähnlich wie LevelPriority, allerdings wird "Aushungern" der tief priorisierten Prozesse verhindert, indem hochpriorisierte Prozesse nach langer Laufzeit nach und nach runterpriorisiert werden (so machen es moderne Betriebssysteme)
+
+
+Beispiel zum Bestimmen des Schedulings mit einfacher Fifo-Chain (siehe http://edu.panter.ch/OsProzesse/SlidesScheduling/030%20Beispielszenario):
+Time    Ready-Queue     CPU
+20      B               A
+30      B, C            A
+40      C               B
+90      C, A            B
+130     A               C
+...
+
+
+TODO: pdf für dieses ddd-Teil wiederfinden -> in "aufgaben" ablegen
+
+
+
+
+
