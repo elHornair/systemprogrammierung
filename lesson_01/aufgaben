@@ -19,3 +19,6 @@ E 1.5:
         "Hallo Welt!": 12
     b)  Weil *s ein Pointer ist und dieser die Startadresse des Strings enthält
     c)  Weil auf den String noch ein Zeichen folgt, das das Ende des Strings markiert.
+
+
+-> korrekt
