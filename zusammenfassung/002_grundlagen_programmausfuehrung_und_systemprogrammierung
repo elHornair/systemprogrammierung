@@ -1,0 +1,96 @@
+Rechner- und Prozessorgrundlagen
+**************************************************************
+Grundmodell eines Rechners:
+- John von Neumann Rechner:
+    - 4 Funktionseinheiten (Leitwerk, Rechenwerk, Speicher, Ein-/Ausgabe)
+    - Leitwerk (Control Unit):
+        - Holt Maschinenbefehle nacheinander aus dem Speicher
+        - Interpretiert Maschinenbefehle und setzt sie in die zugehörigen Steueralgorithmen um
+        -> Arbeitsvorbereitung
+    - Rechenwerk (Processing Unit):
+        - Holt Daten aus dem Speicher (bzw. von der Eingabe)
+        - Bearbeitet Daten (logische / arithmetische Operationen)
+        - Legt Daten im Speicher ab (bzw. übergibt sie der Ausgabe)
+        -> Arbeitsausführung (Datenprozessor)
+    - Speicher (Memory):
+        - Enthält Maschinenbefehle (Programme) und zu verarbeitende Daten (gemeinsamer Adressraum)
+        - Direkt Adressierbar (jede Speicherzelle hat eine eigene Adresse)
+        - "Lagerung" (von Programmen und Daten)
+    - Ein-/Ausgabe (Input/Output, I/O):
+        - Verbindet Peripheriegeräte (z.B. Tastatur, Monitor, Drucker) mit Rechenwerk
+        - Nimmt Daten von der Peripherie entgegen oder übergibt ihr diese
+        -> "Zulieferung / Auslieferung" von Daten
+    - Prozessor (Central Processing Unit, CPU): Rechenwerk + Leitwerk + Register
+    - Transportsystem (Bus): Verbindet einzelne Funktionseinheiten
+- Alternative: Harvard-Architektur (viel weniger populär)
+
+
+Befehlsverarbeitung in der CPU:
+- Holt Schritt für Schritt Befehle aus Speicher, interpretiert diese und aktiviert die zugehörigen Steueralgorithmen (Programmausführung)
+- Adressmässige Anordnung im Speicher: Aufsteigend
+- Startadresse eines Programms: Adresse der ersten Programminstruktion
+- Programminstruktionen können nicht von Daten unterschieden werden -> Nur durch Wissen, was wo platziert ist
+- Vom Prozessor-Hersteller festgelegte Regeln, die Binärzahlwerte den Prozessoroperationen zuordnen -> Instruktionssatzarchitektur (Instruction Set Architecture, ISA) -> Sprache
+- CPU kann:
+    - Rechnen (Addition, Multiplikation)
+    - Kontrollfluss (Schleifen, Bedingungen)
+    - Variablen verwalten
+    - Unterprogramm aufrufen
+- Arbeitsablauf:
+    - Prozessorinitialisierung (Register löschen, Urstartadresse laden)
+    - Endloser Loop von Fetch & Execute
+    - Fetch: Instruktionscode aus dem Speicher holen
+    - Execute: Instruktion dekodieren + (optional) (Operand laden (aus Register oder Speicher) | Datentransformation | Daten (Resultate) ablegen | Programmstatuswort verändern)
+- Programmzählerregister: Gibt an, welcher Befehl als nächster zu laden / auszuführen ist
+- Maschinencode: Eine Reihe von Prozessorinstruktionen (Binärzahlen) -> Von der Maschine ausführbares Programm
+- C-Code wird zu Maschinencode kompiliert (übersetzt)
+- Mnemonics (Assemblerbefehle, Instruktionen für Maschine): Alphanumerische Symbole, besser lesbar als reine Binärzahlen 
+    - Assemblerquellprogramme werden vom Assembler (Dienst) in Maschinencode übersetzt
+    - Beispiel Abstrakt: Lies X, addiere Y, schreibe nach Z
+    - Beispiel Konkret: "addl 0x403020,%eax" (addiere long-Wert der Speicherstelle 0x403020 zur Registerstelle eax und schreibe das Resultat nach eax)
+
+
+Register:
+- "Schneller Speicher" (Faktor 10 schneller als RAM) der CPU
+- Nur in kleiner Anzahl vorhanden (unterschiedlich von CPU zu CPU)
+- Registerbreite: Bei 64-bit-Prozessor sind sie 64 Bit lang
+- Registerarten:
+    - Allgemeine Register: Können beschrieben / gelesen werden (mit Instruktionen)
+    - Steuerregister: Für CPU selbst reserviert (z.B. Programmzähler, Stapelzeiger, Flag ob user- oder supervisor-mode, ...) -> Steuerung des Programmablaufs
+
+
+Grundlagen des Adressraums:
+- Grösse pro Speicherstelle: Verschiedene, heute normalerweise 8 Bit
+- Jede Speicherstelle ist einzeln adressierbar
+- Adressraum: Menge aller möglichen Adressen
+- Adressraumgröße: Anzahl aller möglichen Adressen
+- Bei Adressbus von 24 Bit: Adressraumgrösse ist 2^24
+- Rechenbeispiel: Adressraum der Größe 2^32, pro Adresse 1 Byte => 4 GB adressierbar ((8*2^32)/(8*1024*1024*1024))
+- Im Adressraum eingeschlossen ist auch Peripherie (z.B. die Grafikkarte ist auch adressierbar)
+- Alignment Rules: Regeln, die festlegen, auf welchen Adressen Variablen und Instruktionen liegen dürfen
+    - Grund: Performance, denn so ist unter Umständen nur ein Lesezugriff (anstelle von zwei) nögit 
+    - z.B: Adressnummer muss durch 4 (oder 2) teilbar sein
+
+
+
+Big-Endian / Little-Endian:
+- Grosse Daten (z.B. long) können nicht in ein Registry geschreiben werden -> Verteilung des Datums auf mehrere Bytes (nebeneinanderliegende Adressen)
+- Zwei Ansätze (hängt von CPU ab):
+    - Big Endian: Speichert MSB (most significant Byte -> erstes Byte) zuerst
+    - Little Endian: Speichert LSB (least significant Byte -> hinterstes Byte) zuerst
+- Achtung: Bei Arrays wird immer das erste Element in der niedrigsten Adresse abgelegt. Innerhalb des Elements gilt allerdings wieder BigEndian / LittleEndian-Regel der CPU
+
+
+
+
+Stand: S.58
+
+
+
+TODO:
+- merge notes von schule
+- check wie weit
+- checkin git
+
+
+

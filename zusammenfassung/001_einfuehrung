@@ -1,0 +1,91 @@
+Zweck Betriebssystem
+**************************************************************
+Grob:
+- Sitzt zwischen Anwenderprogrammen und Hardware
+- Erweiterte Maschine (Abstraktion von Hardware) -> Achtung: Treiber nehmen bereits erste Abstraktion von Hardware vor (nicht Teil des OS)
+- Betriebsmittelverwalter (Zuteilung von Speicher und Rechenleistung)
+
+Genauer:
+- Hardwareunabhängige Programmierschnittstelle (API)
+- Geräteunabhängige I-/O-Funktionen (Peripheriegerät kann ändern, wird auf gleiche Art angesprochen)
+- Ressourcenverwaltung (Prozessorleistung wird auf mehrere Prozesse aufgeteilt)
+- Speicherverwaltung (Aufteilung auf mehrere Programme, so dass diese sich nicht gegenseitig überschreiben)
+- Massenspeicherverwaltung (Dateisystem)
+- Parallelbetrieb (Multitasking)
+- Kommunikation zwischen verschiedenen Prozessen
+- Sicherheitsmechanismen (Datenschutz, Datensicherung)
+
+-> Früher mussten Applikationen die Eigenschaften der Peripheriegeräte kennen
+-> Darum kümmert sich heute das Betriebssystem
+
+libc:
+- weitere Abstraktion (damit C auf verschiedenen Betriebssystemen (Kernel) benutzt werden kann)
+
+
+Definition Betriebssystem
+**************************************************************
+Ein Betriebssystem ist eine Menge von Programmen, welche die Ausführung von Benutzerprogrammen auf einem Rechner und den Gebrauch der vorhandenen Betriebsmittel steuern.
+
+
+Einordnung im Computersystem
+**************************************************************
+- Zwischen Benutzerapplikationen und Rechnerhardware
+- Besteht aus Betriebssystemkern und Betriebssystemdiensten
+- Setzt auf Prozessorarchitektur (charakterisiert durch Maschinenbefehlen und Registeraufbau -> Instruktionssatzarchitektur (ISA))
+- Bietet API für Andwendungen an
+- Systemprogramme = Betriebssyste + Entwicklertools (Compiler, Editor, Kommandointerpreter)
+
+
+Betriebssystemarten
+**************************************************************
+- Laufzeitsystem einer Programmiersprache (z.B Modula-2)
+- Virtuelle Maschine (z.B. Java VM)
+- Basisprogramm eines Rechners (z.B. Unix, Windows), z.B. bei Linux -> gcc / vi kommt gleich mit
+- Sprachunabhängige Programmbibliothek (nicht wirklich OS, aber stellt Teile eines OS zur Verfügung -> z.B. Speicherverwaltung auf einem Handy (vor der Smartphone-Zeit))
+
+Klassische Einteilungen:
+- Stapelverarbeitung (batch processing)
+- Time-Sharing-Betrieb
+- Echtzeitbetrieb
+
+
+Betriebssystemarchitekturen
+**************************************************************
+Benutzer-/Kernmodus:
+- Privilegiensystem um gewisse Operationen und Zugriffe zu schützen
+- Damit ein Programmierfehler in einem Anwendungsprogramm nicht das ganze Computersystem durcheinanderbringt
+- Untersützung durch Hardware:
+    - 2 Betriebsarten:
+        - user mode -> beschränkte Rechte für Anwendungen (muss via Betriebssystem auf Hardware zugreifen)
+        - kernel mode -> alle Rechte für Betriebssystem (darf direkt auf Hardware zugreifen)
+    - Auch durch MMU (memory management unit):
+        - Stellt sicher, dass im user mode nicht Systemdateien überschrieben werden können
+- Prozessor überprüft, ob ein Programm im user oder im kernel mode ausgeführt wird -> Security
+
+3 verschiedene Architekturen:
+- Monolithische Systeme:
+    - Viele Verknüpfungen der Komponenten
+    - Keine oder unklare Struktur
+    - MS-DOS, ältere Unix-Varianten (inkl. Linux (allerdings immernoch klare Grenze zu Applikationslayer))
+- Geschichtete Systeme:
+    - Gliederung in Teilfunktionen, die auf mehrere Schichten verteilt sind
+    - Höhere Schichten bauen auf tieferen Schichten auf -> geordnet nach Nähe zu Hardware
+    - Regel: Jeder Layer darf nur mit den Nachbarlayern kommunizieren -> Im Sinne von ISO/OSI-Modell
+    - Neuere Unix-Varianten
+- Mikrokernsysteme:
+    - Nur zentralste Funktionen im Kernteil zusammengefasst
+    - Mikrokern enthält Basisdienste Nachrichtenübermittlung (message passing), Speicherverwaltung (virtual memory), Prozessorverwaltung (scheduling), Gerätetreiber (device drivers)
+    - Weiter gehende Funktionen (z.B. Dateidienste, Verzeichnisdienste) werden von Serverdiensten zur Verfügung gestellt (Ausführung im Benutzermodus), also nachgeladen wenn benötigt
+    - Mac OS X
+
+Abstraktion aus System- und Entwicklersicht:
+- Abstraktion von konkreten Instruktionssatzarchitektur (Prozessortyp)
+- Abstraktion von konkreten Eigenschaften zentraler Rechnerhardware (z.B. physische Adressraumaufteilung)
+- Abstraktion von physikalischen und logischen Eigenschaften von Ein-/Ausgabeschnittstellen
+- Abstraktion von physikalischen und logischen Eigenschaften von angeschlossenen Peripheriegeräten
+-> Applikationsentwicklung profitiert davon, da Programme nicht mehr für bestimmte Systeme entwickelt werden müssen (Portabilität)
+
+
+GDB / DDD:
+**************************************************************
+- Debugger für C
