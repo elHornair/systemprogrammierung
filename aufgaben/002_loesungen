@@ -25,4 +25,10 @@ E 1.3:
 E 1.4:
     a) Ok :)
     b) Wenn die auszuführende Datei nicht geladen werden kann, weil sie z.B. nicht gefunden werden konnte (Hier die Datei "/bin/date")
-    c) 
+    c) Weil Child- und Parent-Prozess beide das Ende des Programms erreichen. Dies könnte behoben werden, indem der Parent-Code in einen else-Block verpackt wird.
+    d) Nein
+    e) Ja. Der Prozess mit der ID 1 (der Init-Prozess)
+    f) Siehe Datei "002_1-4_demoexec.c"
+
+E 1.5:
+    Siehe Datei "002_1-5_demoexec.c"
