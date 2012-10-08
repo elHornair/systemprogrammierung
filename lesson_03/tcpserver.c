@@ -46,17 +46,39 @@ int main(int argc, char *argv[]) {
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     serv_addr.sin_port = htons(portno);
 
+    // listen on TCP socket
     if (bind(sockfd, (struct sockaddr *) & serv_addr,sizeof (serv_addr)) < 0){
         error("ERROR, konnte Socket nicht anbinden\n");
 		exit(0);
 	}
     listen(sockfd, 5);
     clilen = sizeof (cli_addr);
+    printf("Listening on port %d now\n", portno);
+
+    // accept client and create TCP connection
     newsockfd = accept(sockfd, (struct sockaddr *) & cli_addr, &clilen);
     if (newsockfd < 0){
         error("ERROR, konnte Client nicht anbinden");
 		exit(0);
 	}
-    printf("Erstellter Client-Socket hat Deskriptor Nr. %d.\n",newsockfd);
+    printf("Accepted client with descriptor number %d now now\n", newsockfd);
+
+    // communicate with client
+    int msg_length = 99;
+    char message_from_client[msg_length];
+
+    while (1) {
+      // receive message
+      recv(newsockfd, message_from_client, msg_length, 0);
+      printf("Message from client: %s", message_from_client);// TODO: test printf with pointers
+
+      // send message
+      char *msg = "Thx client received message!\n";
+      send(newsockfd, msg, strlen(msg), 0);
+
+      // clear buffer
+      memset(&message_from_client[0], '\0', sizeof(message_from_client));// this ensures that no fractals of the old message are printed with the new message
+    }
+
     return 0;
 }
