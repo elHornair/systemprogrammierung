@@ -1,0 +1,27 @@
+Parallelverarbeitung
+**************************************************************
+
+Parallelität im Allgemeinen:
+- Zwei oder mehr Dinge geschehen gleichzeitig
+- Hardware-Parallelität:
+    - Mehrere CPUs
+    - Es kann aber auch immer gleichzeitig von der Harddisk gelesen werden, wenn die CPU rechnet
+- Software-Parallelität:
+    - Echt gleichzeitige Ausführung bei mehreren CPUs
+    - Mehrere Prozesse teilen sich CPU, falls mehr Prozesse als CPUs:
+        - Normalfall, schliesslich gilt meistens: Anzahl Prozesse > Anzahl Prozessoren
+        - Einzelner Prozess denkt, er habe Ressourcen (Prozessor inkl. Register) alleine zur Verfügung
+        - Quasiparallelität -> Prozessse wechseln sich regelmässig (schnell) ab, so dass man es kaum merkt -> behandeln wir jetzt
+        - Threads / Fibres -> haben untereinander Prioritäten, wechseln sich ab, wenn andere warten müssen -> nächstes Semester
+        - Welcher Prozess erhält wieviel Rechenzeit? -> Prozessorzuteilungsstrategien
+
+
+Begriffe / Analogien:
+- Programm: Kochrezept
+- Prozess: Durchführen, Umsetzen des Kochrezepts (-> Kochen)
+- Thread: Parallel ablaufende Aktivitäten innerhalb einer gemeinsamen Prozessumgebung (jeder Thread gehört zu einem Prozess, ein Prozess kann einen oder mehrere Threads haben)
+- Nebenläufige Prozesse: Quasiparallele Ausführung auf einem Einprozessorsystem
+- Task: Alternativer Begriff zu Prozes
+
+
+Stand: 118

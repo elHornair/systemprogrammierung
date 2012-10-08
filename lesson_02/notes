@@ -1,11 +1,6 @@
 ***********************************************************************************************************
 Prozesse
 ***********************************************************************************************************
-Parallelverarbeitung:
-    - hardwaremässig (mehrere CPUs, z.B. kann aber auch immer gleichzeitig von der Harddisk gelesen werden, wenn die CPU rechnet)
-    - softwaremässig (mehrere Prozesse teilen sich CPU)
-        - wechseln sich regelmässig (schnell) ab, so dass man es kaum merkt -> behandeln wir jetzt
-        - Threads / Fibres -> haben untereinander Prioritäten, wechseln sich ab, wenn andere warten müssen -> nächstes Semester
 
 
 Mehrere Prozesse:
