@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     while (1) {
       // receive message
       recv(newsockfd, message_from_client, msg_length, 0);
-      printf("Message from client: %s", message_from_client);// TODO: test printf with pointers
+      printf("Message from client: %s", message_from_client);
 
       // send message
       char *msg = "Thx client received message!\n";
