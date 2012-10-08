@@ -72,7 +72,8 @@ Big-Endian / Little-Endian:
 - Achtung: Bei Arrays wird immer das erste Element in der niedrigsten Adresse abgelegt. Innerhalb des Elements gilt allerdings wieder BigEndian / LittleEndian-Regel der CPU
 
 
-Grundlagen des Adressraums:
+Grundlagen des Adressraums
+**************************************************************
 - Grösse pro Speicherstelle: Verschiedene, heute normalerweise 8 Bit
 - Jede Speicherstelle ist einzeln adressierbar
 - Adressraum: Menge aller möglichen Adressen
@@ -84,7 +85,8 @@ Grundlagen des Adressraums:
     - Grund: Performance, denn so ist unter Umständen nur ein Lesezugriff (anstelle von zwei) nögit 
     - z.B: Adressnummer muss durch 4 (oder 2) teilbar sein
 
-
+Grundlagen der Programmausführung
+**************************************************************
 Funktionsweise Stack:
 - Heap: "Haufen", "nicht so organisiert"
 - Stack: "Sauberer Stapel"
@@ -100,7 +102,8 @@ Funktionsweise Stack:
     - LIFO-Speicher (last in, first out)
 
 
-Unterprogrammmechanismen
+Unterprogrammmtechniken
+**************************************************************
 - Prozeduren / Funktionen / Methoden -> Zu Unterprogrammen übersetzt in Assembler
 - Oberprogramm -> Unterprogramm 1 (Oberprogramm von Unterprogramm 2) -> Unterprogramm 2 -> ...
 - Bekommen Parameter, geben Rückgabewerte zurück
