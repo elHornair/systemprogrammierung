@@ -1,46 +1,4 @@
 ***********************************************************************************************************
-Rest OS und Hardware
-***********************************************************************************************************
-weiteres assembler beispiel angeschaut:
-    - wie if-else- / while-Schleifen funktionieren
-        cmpl: compare long
-        jle: jump if lower or equal
-        mov: move (von x-adresse nach y-adresse)
-        jmp: jump (unkonditioneller sprung)
-
-Funktionsweise Stack:
-- Heap: "Haufen", "nicht so organisiert"
-- Stack: "Sauberer Stapel"
-    - Stack Frame (ein Eintrag im Stack)
-    - wächst von unten nach oben
-    - Stack-Pointer (zeigt auf aktuelles Stack Frame) -> eigenes Register für Stack-Pointer
-
-Unterprogramme:
-- Prozeduren / Funktionen / Methoden -> Zu Unterprogrammen übersetzt in Assembler
-- Oberprogramm -> Unterprogramm 1 -> Unterprogramm 2
-- Kontext soll pro Programm gewechselt werden (Variable x in Methode a ist nicht gleich Variable x in Methode b) -> Stack zur Realisierung (1 Stack-Frame pro Unterprogramm)
-- Stack-Frame enthält:
-    - Aufrufparameter
-    - lokale Variablen
-    - Rückgabewert
-    - Rücksprungadresse (damit man weiss, wo man hin muss, wenn dieses Unterprogramm fertig ausgeführt ist)
-- Assembler-Befehle:
-    - JSR (Jump SubRoutine): Unterprogramm aufrufen, neues Stackframe
-    - RET: Zurück zu Oberrogramm, ein Stackframe zurück
-- Warum Unterprogramme:
-    - C-Libs müssen nicht immer mitkompiliert werden
-    - Rekursion wird einfacher (nur neues Stack Frame, sonst müsste man ja den Kontext-Switch selber machen (y ist nicht mehr gleich y))
-    - Multithreading wäre sonst kaum möglich (ohne eigenen Kontext pro Thread)
-
-
-Call-by-Value / Call-by-Reference:
-- C:
-    - Standardmässig Call-by-Value für primitive Variablen
-    - Pointer: Call-by-Reference (also für komplexe Variablen, oder mittels *varname für primitive Variablen)
-- Hat auch irgend nen Zusammenhang mit dem Kontextswitch oder?
-
-
-***********************************************************************************************************
 Prozesse
 ***********************************************************************************************************
 Parallelverarbeitung:
@@ -113,11 +71,6 @@ Time    Ready-Queue     CPU
 90      C, A            B
 130     A               C
 ...
-
-
-TODO: pdf für dieses ddd-Teil wiederfinden -> in "aufgaben" ablegen
-
-
 
 
 
