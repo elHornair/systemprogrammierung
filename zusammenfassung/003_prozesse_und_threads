@@ -24,4 +24,86 @@ Begriffe / Analogien:
 - Task: Alternativer Begriff zu Prozes
 
 
-Stand: 118
+Prozessmodell
+**************************************************************
+Grundprinzip:
+- Wir befinden uns nun in der OS-Welt, nicht mehr in der Hardware-Welt
+- Da Anzahl Prozesse > Anzahl Prozessoren, schaltet Betriebssystem automatisch zwischen diesen um (da dies sehr schnell geschieht, scheinen sie parallel zu laufen)
+- Jeder Prozess hat virtuell den ganzen Rechner für sich alleine
+- Was ist ein Prozess aus OS-Sicht?
+    - Belegt einen Datenbereich (inkl. Stach und Heap)
+    - Belegt einen Programmcodebereich
+    - Belegt einen PCB:
+        - Process Control Block
+        - Dient der Prozessverwaltung durch OS
+        - Enthält u.a. PID, aktuellen Prozesszustand, Prozesskontext (Registereinträge, Stack des Prozesses, ... -> so kann Prozess nach Unterbrechung wiederhergestellt werden)
+        - Hat einen internen Program Counter (der beim Prozess-Switchen in den "echten" Program Counter kopiert wird)
+- Prozesswechsel:
+    1. Kontextsicherung aktueller Prozess
+    2. Auswahl nächster Prozess
+    3. Kontextwiederherstellung neuer Prozess
+- Auch Betriebssystem braucht Prozess(e)
+
+
+Ausführbares Programm (Datei):
+- Enthält:
+    - Programmcode (Logik)
+    - Infos Speicherbelegung (z.B. für Konstanten)
+    - Initialwerte (für Variablen / Konstanten)
+- Ausführung:
+    - Programm (inkl. Konstanten) laden (Programm in RAM laden, PCB erstellen, Reservation Speicherbereich für Stack, Initialwerte besetzen, ...)
+    - Starten (Program Counter auf 1. Instruktion setzen)
+    - Programmablauf (Konkurrierung mit anderen Prozessen, kann Systemdienste nutzen), mehrere Instanzen des Programms unterscheiden sich durch ihre PID
+    - Bendigung (Durch Return oder schwerwiegenden Fehler) -> Return-Wert, Speicherfreigabe, PCB wird gelöscht
+
+
+Prozesserzeugung und Terminierung:
+- Gründe für Prozesstart:
+    - Systemstart (Initialisierung)
+    - Erzeugung durch laufenden Prozess
+    - Durch Benutzer (bei Applikationsstart)
+    - Auslösung eines Stapelauftrags (batch job)
+- Vordergrundprozesse: Benutzer interagieren über Schnittstelle (UI)
+- Hintergrundprozesse: Gehören keinem bestimmten Benutzer (z.B. Mail-Agent) -> Daemons
+- 3 Arten der Prozesserzeugung:
+    - Prozessverkettung (chaining): Prozess startet neuen Prozess, terminiert sich selbst (Prozess wird ersetzt)
+    - Prozessvergabelung (forking): Prozess startet neuen Prozess (Kindprozess), läuft selbst weiter
+    - Prozesserzeugung (creating): Prozess startet unabhängigen neuen Prozess, läuft selbst weiter
+    - Unix kann nur fork und chain
+- Prozesse vereinigen:
+    - Join: Prozesse wieder zusammenführen (zwingend nach fork)
+    - Wait: Auf anderen Prozess warten (z.B. auf einen mit create erstellten Prozess)
+    - Join und Wait warten auf Exit (Prozess beenden) des betreffenden Prozesses
+- Möglichkeiten zur Datenweitergabe nach Prozessbeendigung:
+    - Datenvererbung (nur möglich, wenn Prozesse den gleichen Programmcode haben)
+    - Weitergabe über Buffer
+    - Initialparameter wird beim Erstellen an Prozess übergeben
+    - Weitergabe über temporäre Datei
+- Befehle unter Unix:
+    - exec() für chaining (neuer Prozess ersetzt alten Prozess)
+    - fork() für forking (Rückgabewert sagt, ob man Child (0), oder Parent (PID von Parent) ist) -> If-Else um zu entscheiden, ob Child oder Parent (Achtung, keine gemeinsamen Daten)
+    - wait() um auf anderen Prozess zu warten (erhält Status (0 für okay, -1 für Fehler)) und Rückgabewert)
+    - waitpid() um auf bestimmten anderen Prozess zu warten
+    - exit() um Prozess zu beenden (optional: Rückgabewert mitgeben)
+    - return(): Alternative zu exit(), allerdings ohne Aufräumarbeiten (tmp-Files löschen, offene Dateien schliessen, ...)
+- Beispiel für fork:
+    - Webserver, der auf Port 80 wartet
+    - Port 80 soll während Anfrage-Verarbeitung aber nicht für neue Anfragen blockiert werden
+    -> Lösung: Parent-Prozess, der auf neue Anfragen hört. Mittels fork() wird Child-Prozess pro Anfrage erstellt
+- Zombieprozess:
+    - Prozess, der keinen Code mehr ausführt, aber noch einen Eintrag in der Prozesstabelle belegt
+    - 2 Fälle:
+        - Wenn Parent-Prozess wait() aufruft, bevor Child-Prozess exit() aufgerufen hat -> Rückgabewert und Beendigunsstatus müssen noch für Parent bereitgehalten werden
+        - Wenn Parent-Prozess Child-Prozess erstellt und sich dann beendet -> Child-Prozess wird zu Waise-Prozess, kann aber noch weiterlaufen (Init-Prozess (PID=1) wird zu Parent)
+    - Parent-Prozess muss wait() aufrufen, wird dadurch aber blockiert, bis Child beendet wird
+    - Lösung: Parent forkt Child1 -> Child1 forkt Child2 -> Child1 beendet sich selbst -> Child2 wird von Init-Prozess adoptiert (->selbständiger Prozess mittels fork() erstellt) 
+
+
+
+
+
+
+
+
+
+Stand: 131
