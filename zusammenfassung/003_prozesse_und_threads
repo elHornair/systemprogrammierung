@@ -99,6 +99,43 @@ Prozesserzeugung und Terminierung:
     - Lösung: Parent forkt Child1 -> Child1 forkt Child2 -> Child1 beendet sich selbst -> Child2 wird von Init-Prozess adoptiert (->selbständiger Prozess mittels fork() erstellt) 
 
 
+Prozessorzuteilungsstrategien
+**************************************************************
+
+Quasiparallelität im Einprozessorsystem:
+- Problem: Mehr Prozesse als Prosessoren -> mehrere Prozesse auf gleichem Prozessor
+- Prozesse sind oft am Warten (I/O, Netzwerkschnittstellen, ...)
+- Regeln:
+    - OS muss Prozesse "schlafen legen" können
+    - Keine busy waits! ("aktives" warten, d.h. selber nicht arbeiten können, aber andere blockieren)
+
+Prozess- und Thread-Zustände:
+- 4 Zustände:
+    - Laufend (running): Maximal ein Prozess gleichzeitig (pro Prozessor natürlich)
+    - Bereit (ready): Läuft im Moment nicht. Wartet darauf, vom OS ausgewählt zu werden
+    - Wartend (waiting) / Blockiert (blocked): Kann im Moment nicht weiterarbeiten
+    - Inaktiv (inactive): Prozess wurde noch nicht gestartet oder bereits wieder beendet
+    -> Zu "Laufend" kommen Prozesse nur via "Bereit"
+- Wahrscheinlich mehrere Zustände gleichzeitig "ready" -> Bereitliste
+- Es kann auf verschiedene Ereignisse gewartet werden -> Verschiedene Wartelisten
+- In welchem Zustand ein Prozess gerade ist, wird im PCB festgehalten
+
+
+Zuteilungsstrategien:
+
+
+
+
+
+notes school:
+- Prozesse sind oft am warten -> Problem im quasiparallelen System, denn dann ver(sch)wenden die Prozesse ihren Rechenanteil ja zum Warten
+- Deshalb: Scheduling
+- Prozesse können im Scheduling 4 Zustände haben: Waiting, Running, Ready, Inactive
+- Verdrängendes Scheduling: Betriebssystem zwingt Prozess zu stoppen -> "von laufend nach bereit" oder "von inaktiv nach bereit"
+- Fifo: Einfache Fifo-Chain, nächster Prozess startet, wenn erster wartet (es wird aber nicht verdrängt)
+- RoundRobin: Alle 40 (Beispiel) Zeiteinheiten wird Prozess gewechselt (Verdrängende Strategie), oder natütlich, wenn er eh fertig ist
+- LevelPriority: Priorisierung der Prozesse untereinander. Sobald ein Prozess wartet, kommt der höchstpriorisierte Wartende dran 
+- MLV-Chain (Multi Level Feedback): Ähnlich wie LevelPriority, allerdings wird "Aushungern" der tief priorisierten Prozesse verhindert, indem hochpriorisierte Prozesse nach langer Laufzeit nach und nach runterpriorisiert werden (so machen es moderne Betriebssysteme)
 
 
 
@@ -106,4 +143,4 @@ Prozesserzeugung und Terminierung:
 
 
 
-Stand: 131
+Stand: 162

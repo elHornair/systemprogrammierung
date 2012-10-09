@@ -2,15 +2,6 @@
 Prozesse
 ***********************************************************************************************************
 
-Scheduling:
-- Prozesse sind oft am warten -> Problem im quasiparallelen System, denn dann ver(sch)wenden die Prozesse ihren Rechenanteil ja zum Warten
-- Deshalb: Scheduling
-- Prozesse können im Scheduling 4 Zustände haben: Waiting, Running, Ready, Inactive
-- Verdrängendes Scheduling: Betriebssystem zwingt Prozess zu stoppen -> "von laufend nach bereit" oder "von inaktiv nach bereit"
-- Fifo: Einfache Fifo-Chain, nächster Prozess startet, wenn erster wartet (es wird aber nicht verdrängt)
-- RoundRobin: Alle 40 (Beispiel) Zeiteinheiten wird Prozess gewechselt (Verdrängende Strategie), oder natütlich, wenn er eh fertig ist
-- LevelPriority: Priorisierung der Prozesse untereinander. Sobald ein Prozess wartet, kommt der höchstpriorisierte Wartende dran 
-- MLV-Chain (Multi Level Feedback): Ähnlich wie LevelPriority, allerdings wird "Aushungern" der tief priorisierten Prozesse verhindert, indem hochpriorisierte Prozesse nach langer Laufzeit nach und nach runterpriorisiert werden (so machen es moderne Betriebssysteme)
 
 
 Beispiel zum Bestimmen des Schedulings mit einfacher Fifo-Chain (siehe http://edu.panter.ch/OsProzesse/SlidesScheduling/030%20Beispielszenario):
