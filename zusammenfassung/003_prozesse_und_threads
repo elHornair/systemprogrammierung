@@ -122,25 +122,50 @@ Prozess- und Thread-Zustände:
 
 
 Zuteilungsstrategien:
-
-
-
-
-
-notes school:
-- Prozesse sind oft am warten -> Problem im quasiparallelen System, denn dann ver(sch)wenden die Prozesse ihren Rechenanteil ja zum Warten
-- Deshalb: Scheduling
-- Prozesse können im Scheduling 4 Zustände haben: Waiting, Running, Ready, Inactive
-- Verdrängendes Scheduling: Betriebssystem zwingt Prozess zu stoppen -> "von laufend nach bereit" oder "von inaktiv nach bereit"
-- Fifo: Einfache Fifo-Chain, nächster Prozess startet, wenn erster wartet (es wird aber nicht verdrängt)
-- RoundRobin: Alle 40 (Beispiel) Zeiteinheiten wird Prozess gewechselt (Verdrängende Strategie), oder natütlich, wenn er eh fertig ist
-- LevelPriority: Priorisierung der Prozesse untereinander. Sobald ein Prozess wartet, kommt der höchstpriorisierte Wartende dran 
-- MLV-Chain (Multi Level Feedback): Ähnlich wie LevelPriority, allerdings wird "Aushungern" der tief priorisierten Prozesse verhindert, indem hochpriorisierte Prozesse nach langer Laufzeit nach und nach runterpriorisiert werden (so machen es moderne Betriebssysteme)
-
-
-
-
-
-
-
-Stand: 162
+- Wenn mehrere Prozesse gleichzeitig "ready" sind: Entscheid nötig, welcher dran kommt
+- 2 Muster bei Prozessen:
+    - CPU-lastig: Verbraucht viel Rechenzeit
+    - I/O-lastig: Wartet hauptsächlich auf I/O (benutzt viel Peripherie)
+- Optimalerweise wird also darauf geachtet, dass I/O-lastige Prozesse nicht (potentielle) Rechenzeit mit Warten verschwenden
+- Nichtverdrängende Strategien: Ein neuer Prozess bekommt erst Rechenzeit, wenn der alte selbst aus dem Zustand "Laufend" heraustritt (warten, inaktiv, ...)
+- Verdrängende Strategien: Ein aktiver Prozess wird gezielt ersetzt (auch wenn er selber noch fortfahren könnte) -> OS zwingt Prozess zu stoppen
+- Strategien:
+    - FIFO (wichtig):
+        - First In First Out
+        - Am längsten wartender Prozess wird als nächster ausgeführt
+        - Nichtverdrängend
+        - Minimaler Verwaltungsaufwand
+        - Funktioniert nur, wenn Prozesse CPU auch tatsächlich wieder freigeben
+    - SJF:
+        - Shortest Job First
+        - Prozess mit der kleinsten erwarteten Rechenzeit wird als nächster ausgeführt
+        - Nichtverdrängend
+        - Angaben über Rechenzeitbedarf müssen im Voraus zugänglich sein
+    - SRT:
+        - Shortest Remaining Time
+        - Ähnlich wie SJF
+        - Prozess mit dem kleinsten verbleibenden Rechenzeitbedarf wird als nächster ausgeführt
+        - Verdrängend! Ansonsten gleiche Bedingungen wie SJF
+    - RR (wichtig):
+        - Round Robin
+        - Alle 40 (Beispiel) Zeiteinheiten wird Prozess gewechselt, oder natütlich, wenn er eh fertig ist
+        - Verdrängend
+        - Spieltart: Anzahl der Zeiteinheiten variabel machen (abhängig von Prozess oder Last)
+        -> FIFO mit Zeitumschaltung
+    - ML (wichtig):
+        - Multi-Level Priority
+        - Den Prozessen werden Prioritäten zugeordnet
+        - Prozess mit höchster Priorität wird als nächstes ausgewählt (haben 2 die gleiche Prioriät: FIFO)
+        - Verdrängend (-> höchstpriorisierter Prozess besitzt stets CPU)
+        - Nachteil: Monopolisierung von höherpriorisierten Prozessen -> Aushungern von niedrigpriorisierten Prozessen
+        - Spielart: Kombination mit RR (gleich hoch priorisierte Prozesse wechseln sich ab)
+    - MLF (wichtig):
+        - Multi-Level Feedback
+        - Ähnlich wie ML
+        - Auswahl nächster Prozess: Zuerst nach Priorität, bei gleicher Priorität FIFO
+        - Alle Prozesse beginnen hochpriorisiert
+        - Nach bestimmter Laufzeit wreden Prozesse runterpriorisiert
+        - Tiefer priorisierte Prozesse dürfen länger laufen (wenn sie dann drankommen)
+        - Vorteil: Aushungern der tief priorisierten Prozesse wird verhindert
+        - Vorteil: User-Feedback für I/O-lastige Prozesse bleibt schnell, denn sobald diese Prozesse "Wartend" werden, wird ihre Prio wieder zurückgesetzt
+        -> so machen es moderne OS
