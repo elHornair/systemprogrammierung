@@ -69,6 +69,16 @@ Was ist Peripherie?
     - Haben die Daten nur die Grösse von ein paar Registern, wird Interrupt verwendet
 
 
-Stand: S. 330
+Treiber:
+- Ein-/Ausgabesystem des Betriebssystems ermöglicht Datentransfer zwischen Anwenderprogrammen und Peripherie
+- Treiber: Software, welche die Verbindung zwischen Anwenderprogramm und einzelnem Gerät erläubt
+- Treiber sind also Teil des Betriebssystems
+- Treiber können:
+    - Gerätezustände abfragen
+    - Befehle an Gerät übermitteln
+    - Daten vom / zum Gerät übermitteln
+
+
+Stand: S. 331
 
 
