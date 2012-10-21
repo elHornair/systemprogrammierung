@@ -27,46 +27,7 @@ Time    Ready-Queue     CPU
 
 
 
-***********************************************************************************************************
-Peripherie
-***********************************************************************************************************
-- Peripherie ist alles, das am Bus hängt und nicht CPU oder Speicher ist
-- Frage: Wie spricht man mit Peripherie?
-- Antwort: 3 Wege:
-    - Programmgesteuert:
-        - Immer wieder lesen, bis etwas ins Statusregister geschrieben wurde
-        - Polling / Busy waiting
-        - Nachteil: Blockiert ganzes System
-    - Mit Programmunterbrechung (Interrupt):
-        - Interrupt:
-            - Unterbrechungssignal für CPU - hat höchste Priorität überhaupt (CPU stopt sofort und behandelt Interrupt)
-            - Interrupt-Check ist fest in der CPU verdrahtet
-            - CPU-Loop muss also ergänzt werden:
-                - Fetch (Instruktion holen)
-                - Execute (Instruktion ausführen)
-                - Interrupt Check
-                    - Wenn Interrupt gesendet wurde:
-                        - Spring zu entsprechender Adresse (z.B. Interrupt5)
-                        - Führe aus, worauf an dieser Adresse verwiesen wird (ISR)
-                        - Wenn fertig, führe nächsten CPU-Cycle aus
-            - Treten mehrere Interrups gleichzeitig auf: Chain
-            - Für Interrupts wird ein Stack verwendet
-        - Peripherie hat Controller drin, der mit Ereignissen umgehen kann
-        - Ablauf:
-            1. Konfigurationsphase (wann er was machen soll) (geht sehr schnell, ms-Bereich)
-            2. Controller übernimmt Übertragung des Signals (etwas langsamer, höherer ms-Bereich), z.B. Zeichen übertragen (während dieser Zeit kann CPU etwas anderes machen)
-            3. Signalisation (Interrupt), z.B. "habe Zeichen erhalten"
-            4. CPU reagiert auf Interrupt (mit ISR, Interrupt Service Routine), sendet z.B. neues Zeichen
-        - Software-Interrupt: z.B. wenn von user-mode zu kernel-mode gewechselt werden soll
-    - Direct Memory Access (DMA):
-        - CPU ist nicht mehr Benötigt für Übertragung von Hauptspeicher zu Peripherie
-        - DMA sorgt dafür, dass Peripherie und Hauptspeicher direkt kommunizieren können
-        - Ablauf:
-            1. Konfiguration (Quelle, Ziel, Menge)
-            2. DMA Betrieb (CPU kann derweil etwas anderes machen)
-            3. Abschluss (Info, obs funktioniert hat, so und soviel wurde übertragen) -> Wiederum mit Interrupt signalisiert
-        - Verwendet für grosse Datenmenge. Haben die Daten nur die Grösse von ein paar Registern, wird Interrupt verwendet
-        - Achtung: Während DMA-Prozess ist BUS blockiert, d.h. CPU muss unterbrechen, sobald sie Bus braucht
+-> siehe nochmals http://edu.panter.ch/EinAusgabeAblaeufe
 
 
 TODO: Übung Kernel Modul:

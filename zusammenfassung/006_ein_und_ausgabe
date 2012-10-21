@@ -1,0 +1,74 @@
+Peripherie
+**************************************************************
+
+Was ist Peripherie?
+- Durch Ein-/Ausgabefunktionen bediente Hardware
+- Alles, das am Bus hängt und nicht CPU oder Speicher (RAM / Register) ist
+- Z.B. Plattenspeicher, Magnetbänder, Drucker, Netzwerke, Bildschirme
+- Drei Möglichkeiten, um mit Peripherie zu sprechen: Programmgesteuerte I/O, I/O mittels Programmunterbrechungen, DMA-Betrieb
+
+
+1. Programmgesteuerte Ein-/Ausgabe:
+- Immer wieder lesen, bis etwas ins Statusregister geschrieben wurde -> Abfrageschleifen (Polling / busy waiting)
+- Langsam, viel Rechnerzeit wird mit Warten verschwendet
+- Nachteil: Ganzes System wird blockiert
+- Nur akzeptabel für sehr kurze I/O-Vorgänge
+
+
+2. Ein-/Ausgabe mittels Programmunterbrechungen (Interrupt)
+- Prinzip: Während auf Peripheriegerät gewartet wird, widmet sich CPU anderen Aufgaben. Sobald Peripheriegerät bereit ist, sendet es Interruptsignal
+- Interrupt:
+    - Unterbrechungssignal für CPU - hat höchste Priorität überhaupt (CPU stopt sofort und behandelt Interrupt)
+    - Interrupt-Check ist fest in der CPU verdrahtet
+    - CPU-Loop muss also ergänzt werden:
+        - Fetch (Instruktion holen)
+        - Execute (Instruktion ausführen)
+        - Interrupt Check -> Falls Interrupt gesendet wurde:
+            - Spring zu entsprechender Adresse (z.B. Interrupt5)
+            - Führe aus, worauf an dieser Adresse verwiesen wird (Interrupt Service Routine ISR)
+            - Wenn fertig, führe nächsten CPU-Cycle aus (return-from-interrupt)
+    - Gründe für Interrupt-Signal:
+        - Fehlersituation (z.B. Division by Null, ungültiger Instruktionscode, Adressfehler, ...)
+        - Software-Interrupt (Ausgelöst durch Programm, z.B. für Umschaltung in Kernmodus)
+        - Hardware-Interrupt (Ausgelöst durch Peripherie, z.B. falls I/O abgeschlossen)
+- Vektorisierung:
+    - Zuordnung von Interrupt-Typ zu ISR-Startadresse
+    - Damit die CPU weiss, wo sie nach einem Interrupt hinspringen muss
+    - Zuordnung geschieht in der Vektortabelle
+- Priorisierung von Interrupts:
+    - Nötig, falls Interrupt B auftritt, wenn Interrupt A noch nicht vollständig behandelt wurde
+    - Einebenen-Unterbrechungssystem: B muss warten, bis A fertig ist, auch wenn B höher priorisiert ist
+    - Mehrebenen-Unterbrechungssystem: B kann A unterbrechen und so Zeit gewinnen (auf Kosten von A)
+- Unterbrechungskontext: Für Interrupts wird ein Stack verwendet
+- Peripherie hat Controller drin, der mit Ereignissen umgehen kann
+- Ablauf einer String-Übertragung mit Interrupt:
+    1. Konfigurationsphase (wann er was machen soll) (geht sehr schnell, ms-Bereich)
+    2. Hardware-Controller übernimmt Übertragung des Signals:
+        - etwas langsamer, höherer ms-Bereich
+        - z.B. Zeichen übertragen (während dieser Zeit kann CPU etwas anderes machen)
+    3. Signalisation (Interrupt), z.B. "habe Zeichen erhalten"
+    4. CPU reagiert auf Interrupt (mit ISR) -> sendet z.B. neues Zeichen
+
+
+3. DMA-Betrieb
+- Direct Memory Access
+- Datentransfers werden von CPU an I/O-Controller abgegeben
+- CPU ist nicht mehr benötigt für Übertragung von Hauptspeicher zu Peripherie (bzw. nur noch für Initialisierung)
+- Peripherie und Hauptspeicher können so ohne CPU miteinander kommunizieren
+- DMA Betriebsphasen:
+    1. Initialisierung: CPU weist DMA-Kontroller an (Quell- und Ziel-Adresse, Datenmenge werden festgelegt)
+    2. DMA Betrieb:
+        - Datentransfer durch DMA-Kontroller
+        - CPU kann derweil etwas anderes machen
+        - Achtung: Während DMA-Prozess ist BUS blockiert, d.h. CPU muss unterbrechen, sobald sie Bus braucht
+    3. Abschluss: Info, obs funktioniert hat, so und soviel wurde übertragen (mit Interrupt signalisiert)
+- Wann wird DMA-Betrieb eingesetzt?
+    - Übertragung von grosser Datenmenge zu langsamem Takt (wenn CPU viel schneller ist, als I/O), z.B. Diskettenlaufwerk, serielle Schnittstelle
+    - Extrem grosse Datenmengen sind zu übertragen (z.B. Bilddaten), z.B. Festplatten-I/O
+    -> DMA-Betrieb wird verwendet für grosse Datenmengen, weil dann schneller als Interrupt (der ISR für jedes einzelne Byte ausführen müsste)
+    - Haben die Daten nur die Grösse von ein paar Registern, wird Interrupt verwendet
+
+
+Stand: S. 330
+
+
