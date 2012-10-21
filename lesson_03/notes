@@ -9,28 +9,21 @@ Nachholen:
 - dann mit musterlösung vergleichen (wichtig, kommt so an prüfung)
 
 
-Interprozesskommunikation:
-- synchronisation: semaphore (im glatz nachlesen) und signale
-- signale (unix signale):
-    - liste mit beispielen angeschaute
-    - zwischen zwei prozessen, die unter dem gleichen user laufen
-    - signal triggern / signal handler
-    - signale schicken unter unix: kill -ALRM (z.B., oder -HUP) 999 (pid)
-    - prozesse haben standard-handler für verarbeitung der signale (werden überschrieben, falls eigener handler definiert wird)
-    - vorteil: einfach (verhältnismässig)
-    - nachteil: es gibt nur wenig verschiedene signale (es können keine eigenen definiert werden)
+
+Beispiel zum Bestimmen des Schedulings mit einfacher Fifo-Chain (siehe http://edu.panter.ch/OsProzesse/SlidesScheduling/030%20Beispielszenario):
+Time    Ready-Queue     CPU
+20      B               A
+30      B, C            A
+40      C               B
+90      C, A            B
+130     A               C
+...
+
+-> in doc ergänzen
 
 
-Schichtenmodell:
-- ISO/OSI
-- Höhere Schichten verlassen sich auf tiefere
-- Schichten kommunizieren jeweils mit ihrem Pendant auf der anderen Seite der Kommunikation
-- IP: Adressierung
-- TCP:
-    - Auf Transport-Layer
-    - Verbindung herstellen (über bestimmten Port) -> Ports > 1024 stehen Benutzer zur Verfügung (bis zu 60k gleichzeitige Verbindungen möglich)
-    - TCP benötigt IP um Verbindung herzustellen
-    - Sockets (beispiel angeschaut)
+
+
 
 
 

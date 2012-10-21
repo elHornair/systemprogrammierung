@@ -1,0 +1,40 @@
+Synchronisation von Prozessen & Threads
+**************************************************************
+
+Problem:
+- Der Zugriff auf Ressourcen, die von mehreren Prozessen gleichzeitig benutzt werden, muss synchronisiert werden
+- Beispiele:
+    - Problem der Ressourcenteilung: Zwei Prozesse drucken gleichzeitig -> Gemisch der beiden Texte wird gedruckt
+    - Verlorene Aktualisierung: P1 fügt 4.- zum Saldo hinzu, P2 zieht 2.- ab -> Problem, wenn P1 zuerst schreibt, aber P2 liest, bevor P1 geschrieben hat
+    - Inkonsistente Abfrage: Uhrzeit wird in h:m:s nachgeführt. Wenn um 10:59:59 die Sekunde aktualisiert wird, dann die Uhrzeit gelesen wird, bevor Stunden und Minuten aktualisiert wurden -> Problem (10:59:00)
+- Lösung allgemein: Kritische Bereiche müssen stets unteilbar hintereinander ablaufen
+
+
+Absicherung mit Selbstverwaltung:
+- Ansatz: Ressource mit boolscher Variable sperren (lock). Z.B. "druckerBesetzt"
+- Problem: Zwischen Prüfung (if druckerBesetzt) und Veränderung (druckerBesetzt = true) der Variablen, kann der Thred/Prozess gewechselt werden 
+- "Naive Lösung": TAS-Befehl (Test and Set) als "Inline Assembler Code". Nachteil: Abhängig von Compiler und Prozessortyp
+- Korrekter Ansatz: "Ticketing-System" wie in der Bäckerei (deshalb auch Bakery Algorithm)
+
+
+Semaphore:
+- Betriebssystemobjekte für die Absicherung und Synchronisation von Prozessen
+- Semaphor besitzt die Funktionen "reservieren" und "freigeben" und einen internen Zähler, der die Anzahl freier Ressourcen überprüft
+- Prozess, der auf die vom Semaphor bewachte Datenstruktur zugreifen will, muss zuerst "reservieren" aufrufen
+- Wenn Prozess im Moment nicht zugreifen soll, wird er vom Sempahor blockiert, bis er darf
+- Wenn er die Ressource nicht mehr benötigt, muss der Prozess die Funktion "freigeben" des Semaphors aufrufen
+
+
+Unix-Signale:
+- Prozess A kann Prozess B ein Signal senden, wenn er dessen PID kennt
+- Prozess, der Signal erhält, wird unterbrochen (d.h. mit Signal assozierte Funktion wird sofort ausgeführt)
+- Empfangender Prozess kann (die meisten) Signale ignorieren (d.h. mit Signal assozierte Funktion macht nichts)
+- Beispiele: SIGKILL (Prozessabbruch, kann nicht ignoriert werden), SIGALRM (timer ist abgelaufen), SIGINT  (Ctrl + C -> keyboard interrupt)
+- Zwischen zwei Prozessen, die unter dem gleichen User laufen
+- Signale schicken unter Unix: "kill -<sigtype> <pid>", z.B. kill -ALRM (oder -HUP) 999
+- Signal handler definieren: "signal(SIGALRM, forward);" (Beim Signal "SIGALRM" wird die Funktion "forward" aufgerufen)
+- Weitere Funktionen: "kill" (Signal senden / triggern), "pause" (auf Signal warten), "alarm" (zeitverzögerten Alarm setzten)
+- "signal()" heute durch "sigaction()" ersetzt
+- Prozesse haben Standard-Handler für Verarbeitung der Signale -> diese werden überschrieben, falls eigener Handler definiert wird
+- Vorteil: Verhältnismässig einfach
+- Nachteil: Nur wenig verschiedene Signale (es können keine eigenen definiert werden)

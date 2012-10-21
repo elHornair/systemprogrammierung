@@ -1,0 +1,49 @@
+Interprozesskommunikation (IPC)
+**************************************************************
+
+Überblick:
+- IPC wird häufig als Oberbegriff für sowohl für Synchronisation als auch Kommunikation zwischen Prozessen und Threads verstanden
+- Synchronisation: Semaphore und Signale
+- Komunikation: speicherbasierte (gemeinsamer Speicher) und nachrichtenbasierte (synchron, asynchron) Verfahren
+
+
+Nachrichtenbasierte Verfahren:
+- Synchronität:
+    - Synchron:
+        - Sender muss warten, bis Empfänger zur Entgegennahme bereit ist (Rendezvous)
+    - Asynchron:
+        - Sender läuft weiter, auch wenn Empfänger im moment nicht für Datenempfang bereit ist
+        - Daten kommen in Nachrichtenpuffer (z.B. message queue) und werden vom Empfänger abgeholt, wenn er bereit ist
+    - Typische Methoden von message queue: "send(destination, &message);" und"receive(source, &message);"
+- Beispiel Unix-Pipes: Leiten Ausgabedaten von Prozessen direkt als Eingabedaten für andere Prozesse weiter (e.g. "who | sort | more")
+
+
+
+Kommunikation im Schichtenmodell:
+- Refresher ISO/OSI Modell: Höhere Schichten bauen auf tieferen auf -> Dies gilt auch für die Kommunikation
+- Schichten kommunizieren jeweils mit ihrem Pendant auf der anderen Seite der Kommunikation
+- IP: Adressierung
+- TCP:
+    - Auf Transport-Layer
+    - Verbindung herstellen (über bestimmten Port) -> Ports > 1024 stehen Benutzer zur Verfügung (bis zu 60k gleichzeitige Verbindungen möglich)
+    - TCP benötigt IP um Verbindung herzustellen
+
+
+Berkeley-Sockets:
+- Problem: Rechnerübergreifende Kommunikation kann mit Unix-Pipes nicht realisiert werden
+- Berkeley-Sockets setzten direkt auf TCP auf und erlauben auch netzwerkübergreifende Kommunikation
+- Kommunikationsendpunkte: Ports (Prozesse können also eindeutig über Ports adressiert werden)
+- Beispiel Sockets:
+    - Siehe "tcpserver.c" in lesson_03
+    - Um in Commandline zu testen: Server starten, dann "nc localhost 3003" (netcat), oder "telnet localhost 3003" (telnet)
+- Funktionen:
+    - Endpunkt öffnen: socket()
+    - Endpunkt benennen: bind()
+    - TCP-Verbindung aufbauen: accept(), listen(), connect()
+    - Daten senden: write(), send(), sendto()
+    - Daten empfangen: read(), recv(), recvfrom()
+
+
+RPC:
+- Remote Procedure Call
+- Mechanismus, der den Aufruf von entfernten Prozeduren ermöglicht
