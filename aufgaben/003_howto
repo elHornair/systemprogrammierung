@@ -1,0 +1,7 @@
+compile module: make
+see module info: modinfo hello.ko
+see all loaded modules: lsmod
+load module: sudo insmod hello.ko myshort=23
+unload module: sudo rmmod hello
+
+note: log messages by the modules go to syslog. Read them with: "dmesg | tail"
