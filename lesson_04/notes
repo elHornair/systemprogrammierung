@@ -1,0 +1,162 @@
+Speichersystem:
+**************************************
+
+Arten von Speicher:
+- Direkt adressierbarer Speicher:
+    - RAM, ROM
+    - Direkt über Adresse zugreifbar
+- Schieberegister:
+    - einzelne Bits werden vorne reingeschoben
+    - beim reinschreiben wird hinten ein Bit zum auslesen freigegeben
+    - Einzelne Bits sind nicht direkt adressierbar
+    - "Flip-Flop"   
+    - z.B. Ethernet
+- FIFO:
+    - z.B. Buffer sind so gemacht
+    - Verwaltungsprinzip: Lese- und Schreibpointer
+- LIFO:
+    - z.B. Stack
+    - Verwaltungsprinzip: Stackpointer (+ Grösse des Stackframes ist bekannt)
+- Assoziativspeicher:
+    - Inhaltsadressierte Speicher
+    - z.B. Datenbank -> Primärschlüssel ist Adressierungselement (und gleichzeitig Inhalt)
+
+
+Arten von Speicher:
+- Massenspeicher (Zugriffszeit ziemlich langsam, sehr grosse Kapazität, billig)
+- Hauptspeicher
+- Cache-Speicher
+- Register (sehr schnell, sehr wenig Speicher, teuer)
+-> schnelle Speicher sind klein und teuer
+
+
+Lokalitätseffekt:
+- WorkingSet w(t-T, t) bleibt für grössere Zeiträume gleich
+- Räumliche Lokalität:
+    - "Wenn auf Adresse X zugegriffen wird, wird wahrscheinlich als nächstes auf Nachbaradresse zugegriffen"
+    - Erkenntnis: Wenn wir X in RAM laden, auch gleich Nachbar in RAM laden
+- Zeitliche Lokalität:
+    - "Wenn auf Adresse X zugegriffen wird, wird wahrscheinlich schon bald nochmals auf Adresse X zugegriffen"
+    - Erkenntnis: Geladene Adressinhalte in schnellem Speicher cachen / puffern (z.B. im Register anstatt im RAM) -> Caching
+
+Caching:
+- Benutzer kann nicht auf cache memory zugreifen
+- Schwierigkeit: wenn gecachete Inhalte verändert werden, muss Cache geleert werden
+- Cache wird auf verschiedenen Leveln implementiert (CPU-Chip (Register, Level1-Cache), Level2-Cache, Hauptspeicher(RAM), Festplatte)
+- Berechnungen:
+    - Teff         = h       *  Tcache                  + (1 - h)       *  Tmainmemory
+    - Zugriffszeit = Hitrate * (Zugriffszeit auf Cache) + (1 - Hitrate) * (Zugriffszeit auf Hauptspeicher)
+    - Tcache << Tmainmemory (Zugriffszeit auf Cache ist viel schneller als Zugriffszeit auf main memory)
+    - h >> (1-h)
+- Cache ist assoziativer Speicher
+- Ein Cache-Eintrag besteht aus Adressinfo (tag) und cache-lines (Kopien von Hauptspeicherinhalten)
+- Vorgehen CPU: Ist etwas schon im Cache? Ja: aus cache laden. Nein: RAM überprüfen
+- Im Cache-Eintrag gibts zusätzlich ein Gültigkeitsbit (invalidated cache entries werden als erstes überschrieben), invalidiert wird z.B. bei Kontextwechsel
+- Peripherie ist nicht cachebar
+
+
+Virtual Memory:
+**************************************
+- Adressraum eines Programms:
+    - Compiler gruppiert logisch in Folgende Teile
+        - uninitialisierte Daten (.bss-Sektion)
+        - vorinitialisierte Daten (.data-Sektion)
+        - Programmcode (-text-Sektion)
+    - OS verhindert, dass Programe auf den Adressraum anderer Programme zugreifen können
+    - Adressraum des Programms wird aufgeteilt in:
+        - Text-Region (Maschinencode des Programms)
+        - Data-Region (Initialisierungswerte für Variablen)
+        - BSS-Region (Variablendeklarationen)
+        - Heap-Region
+        - Stack-Region (Heap und Stack 2wachsen aufeinander zu)
+        - Argument-Region (Argumente für das Programm)
+        - Environment-Region (z.B. PATH)
+- Virtualisierung des Speichers:
+    - Jeder Prozess hat gesamten Adressraum zur Verfügung (es gibt aber ja den ganzen Speicher nur einmal)
+    - Der Speicher jedes Prozesses muss vor den anderen Prozessen geschützt werden
+    -> sehr schwierige Aufgabe
+    - Aufgabe wird von Adressumsetzungshardware übernommen (MMU). Diese sitzt zwischen CPU und Speicherbus
+- Adressumsetzung:
+    - Mapping vom virtuellen Speicher zum Realen
+    - Beispiel: "wenn Prozess X auf Adresse Y zugreift, dann schaue in Adresse Z"
+    - Das macht MMU (memory management unit)
+    -> d.h. jeder Speicherzugriff wird eigentlich zu zwei Speicherzugriffen (1. rausfinden, wo das Datum ist, 2. auf Datum zugreifen)
+    - Seitenbasierte Umsetzung:
+        - Seite: grösse des virtuellen Frames?
+        - Verschnitt: wenn virtueller Speicher im realen Speicher verschnitten ist
+    - Verschiebungsfaktor:
+        - Physikalische Adr. = logische Addr. + (v * |Page|)
+        - Seitennumer = ((logische Adr.)/(|Page|)) + (Ganzzahl)
+        - Beispiel angeschaut. Siehe http://edu.panter.ch/VirtualMemory/090%20Nutzungsbeispiel
+    - Vorteile Umsetzungstabelle:
+        1. Prozesse können so tun, als ob sie den ganzen Speicher zur Verfügung hätten
+        2. ...?
+        3. Durch die Umsetzung kann es garnicht passieren, dass Prozess A auf Speicher von Prozess B zugreift
+    - 2^(adressbit) * (Grösse Seitendesk.)/(Seitengrösse) = Speicherplatz, der pro Umsetzungstabelle benötigt wird
+    - Umsetzungstabellen sind also speicherplatzmässig sehr teuer
+    - Lösung: kaskadierende Tabellen (siehe http://edu.panter.ch/VirtualMemory/100%20PentiumProzessor)
+
+Formeln:
+    - Blocknummer = Adresse / Blockgröße (ganzzahldivision ohne rest)
+    - AP = AL + v * S
+        AP: physische Adresse (= Speicheradresse)
+        AL: logische Adresse (= Programmadresse bzw. virtuelle Adresse)
+        v: Verschiebungsfaktor (vorzeichenbehafteter Ganzzahlwert)
+        S: Seitengröße (2k, k ist konstant)
+
+
+TODO: check Aufgabe 004: 4.2
+Prüfung: man muss virtual memory umrechnungen machen können
+
+
+Speicherverwaltung
+**************************************
+- wir befinden uns auf dem Heap -> Dynamische Speicherverwaltung
+
+Heap:
+    - dort verwalten wir den Speicher selber (in C wirklich selber, in Java machts die JVM)
+    - Bsp: malloc(size_t size);
+    -> OS gibt uns einen zusammenhängenden (zumindest im vituellen Adressraum) Block auf dem Speicher zurück
+
+Ziele:
+    - flexible Zuordnungseinheiten (länge des zu allozierenden Bereichs)
+    - zusammenhängende Zuordnungseinheiten (sonst funktionieren ja z.B. Arrays nicht mehr)
+    - schnellstmögliche Zuordnung
+    - maximale Ausnutzung des vorhandenen Speicherplatzes
+        - Fragmentierungsproblem:
+            - Externe Fragmentierung:
+                - Im Speicher ist zwar noch genug Speicher vorhanden, allerdings nicht in zusammenhängender Form
+                - Lösung: Defragmentierung. Kann man hier aber nicht, da man keine Liste mit allen belegten Speicherfragmenten hat
+            - Interne Fragmentierung:
+                - Wenn sich z.B. ein Algorithmus einheitlich grosse Zuordnungseinheiten braucht -> es entstehen "nicht nutzbare reste" (verschnitt)
+    -> Problem: Diese Ziele sind teilweise widersprüchlich
+
+Zuordnungsarten:
+- Variable Zuordnungseinheiten
+    - Verkettete Liste
+    - Jeder Eintrag hat drei Einträge: Startadresse, Länge des Blocks, Pointer auf nächsten Block
+    - 2 Varianten: Freie oder besetzte Blocks speichern
+    - Algorithmen:
+        - first fit (erster freier Block, der gross genug ist, wird genommen) -> starke Fragmentierung
+        - next fit (wie "first fit", es wird aber bei der letzten Füllung gestartet) -> starke Fragmentierung
+        - best fit (block, der anforderung am knappesten erfüllt wird gesucht) -> Wahrsch. muss ganze Liste durchsucht werden, weniger Fragmentierung
+- Einheitliche Grössen finden (Einteilung in Grössenklassen)
+    - "Ein Bereich im Adressraum übernümmt nur die kleinen Objekte", etc.
+    - Nächste Klasse hat immer doppelt so grosse Bereiche wie vorherige Klasse 
+    - Objekt wird immer in die kleinste Klasse gelegt, in die es passt
+    - Algorithmen:
+        - quick fit (durch die fixe grösse kann innerhalb der grössenklasse sofort alloziert werden)
+            -> mehraufwand durch verwaltung der grössenklassen
+            -> wie weiss man, wie gross der platz sein muss, der für die klassen reserviert wird? 
+- Man nimmt einheitliche Grösse an und definiert, dass alle Belegungen mehrfache dieser Grösse sind
+    - Startadresse wird immer auf Mehrfache einer festen Grösse gelegt
+    -> Nachteil: Interne und externe Fragmentierung
+
+=> Lösung: Buddysystem (Mischung aus den verschiedenen Zuordnungsarten)
+    - starten mit gesamtem Bereich
+    - Bereich solange halbieren, wie gesuchte Grösse grade noch Platz hat (z.B. kommen 90KB in einen 128KB-Block)
+    - Wenn "Buddy" gesucht wird (Speicherbereich, der so gross ist, wie ein schon existierender): sehr schneller Zugriff
+    - Chance, dass ein Buddy gesucht wird ist gross (da oft 2 gleich grosse Variablen verwendet werden)
+
+
+
