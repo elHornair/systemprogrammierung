@@ -148,7 +148,7 @@ Zuteilungsstrategien:
         - Verdrängend! Ansonsten gleiche Bedingungen wie SJF
     - RR (wichtig):
         - Round Robin
-        - Alle 40 (Beispiel) Zeiteinheiten wird Prozess gewechselt, oder natütlich, wenn er eh fertig ist
+        - Alle 40 (Beispiel) Zeiteinheiten wird Prozess gewechselt, oder natürlich, wenn er eh fertig ist
         - Verdrängend
         - Spieltart: Anzahl der Zeiteinheiten variabel machen (abhängig von Prozess oder Last)
         -> FIFO mit Zeitumschaltung
@@ -162,10 +162,26 @@ Zuteilungsstrategien:
     - MLF (wichtig):
         - Multi-Level Feedback
         - Ähnlich wie ML
-        - Auswahl nächster Prozess: Zuerst nach Priorität, bei gleicher Priorität FIFO
+        - Auswahl nächster Prozess: Zuerst nach Priorität, bei gleicher Priorität FIFO (oder RR)
         - Alle Prozesse beginnen hochpriorisiert
         - Nach bestimmter Laufzeit wreden Prozesse runterpriorisiert
         - Tiefer priorisierte Prozesse dürfen länger laufen (wenn sie dann drankommen)
         - Vorteil: Aushungern der tief priorisierten Prozesse wird verhindert
         - Vorteil: User-Feedback für I/O-lastige Prozesse bleibt schnell, denn sobald diese Prozesse "Wartend" werden, wird ihre Prio wieder zurückgesetzt
         -> so machen es moderne OS
+
+Beispiel Zuteilungsstrategien:
+- Ausgangslage: Siehe http://edu.panter.ch/OsProzesse/SlidesScheduling/030%20Beispielszenario
+- Fifo-Chain
+- Lösung:
+
+    Time    Ready-Queue     CPU
+    20      B               A
+    30      B, C            A
+    40      C               B
+    90      C, A            B
+    130     A               C
+    160     ...             A
+    190     ...             ...
+
+    Totale Rechenzeit: 190ms

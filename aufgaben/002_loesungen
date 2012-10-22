@@ -32,3 +32,21 @@ E 1.4:
 
 E 1.5:
     Siehe Datei "002_1-5_demoexec.c"
+
+
+Scheduling:
+***************************
+E 6.1:
+    a) minimal: 0
+       maximal: 14
+       Begründung: Minimal keiner, weil auch keiner bereit sein kann. Maximal 14 weil einer davon ausgeführt würde
+    b) minimal: 0
+       maximal: 15
+       Begründung: Es können sowohl alle, als auch keiner blockiert sein, weil dies von externen Ereignissen abhängen kann (z.B. I/O)
+    c) minimal: 0
+       maximal: 1
+       Begründung: Wenn alle blockiert sind, läuft keiner. Da es ein Einprozessorsystem ist, kann gleichzeitig nur einer laufen
+
+E 6.2:
+    Bsp: Siehe S.2 von 002_Uebung_CPU_Scheduling.pdf
+
