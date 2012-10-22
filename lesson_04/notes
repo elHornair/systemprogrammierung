@@ -2,27 +2,6 @@ Speichersystem:
 **************************************
 
 Arten von Speicher:
-- Direkt adressierbarer Speicher:
-    - RAM, ROM
-    - Direkt über Adresse zugreifbar
-- Schieberegister:
-    - einzelne Bits werden vorne reingeschoben
-    - beim reinschreiben wird hinten ein Bit zum auslesen freigegeben
-    - Einzelne Bits sind nicht direkt adressierbar
-    - "Flip-Flop"   
-    - z.B. Ethernet
-- FIFO:
-    - z.B. Buffer sind so gemacht
-    - Verwaltungsprinzip: Lese- und Schreibpointer
-- LIFO:
-    - z.B. Stack
-    - Verwaltungsprinzip: Stackpointer (+ Grösse des Stackframes ist bekannt)
-- Assoziativspeicher:
-    - Inhaltsadressierte Speicher
-    - z.B. Datenbank -> Primärschlüssel ist Adressierungselement (und gleichzeitig Inhalt)
-
-
-Arten von Speicher:
 - Massenspeicher (Zugriffszeit ziemlich langsam, sehr grosse Kapazität, billig)
 - Hauptspeicher
 - Cache-Speicher

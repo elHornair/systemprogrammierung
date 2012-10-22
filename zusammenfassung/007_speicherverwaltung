@@ -1,0 +1,48 @@
+Speichersystem
+**************************************************************
+
+Hauptspeicher / Primärspeicher (Main memory):
+- RAM
+- Während der Ausführung befinden sich Programme und Daten hier
+- Direkt adressierbar: Speicheradresse führt direkt zu Inhalt
+
+
+Sekundärspeicher:
+- z.B. Festplatte
+- Zur persistenten Programm- und Datenspeicherung
+- Indirekt adressierbar mit Schnittstellen-Hardware und -Software
+
+
+Grundlegende Speicherprinzipien:
+- In elektronischen Bauteilen
+- Grundlegende Prinzipien:
+    1. Direkt adressierbarer Speicher
+        - Über Adresse wird direkt die gewünschte Speicherstelle angesprochen
+        - Zugriff: Auf jede Stelle gleich schnell (unmittelbar)
+        - Grösse pro Zelle: 1 Byte (8 bit)
+        - z.B. RAM, ROM
+    2. Mehrportspeicher
+        - Speicher mit mehreren Zugriffspfaden
+        - z.B. wenn Prozessor und Peripheriekontroller gleichzeitig auf gleiche Speicherstellen zugreifen können müssen
+        - Umgesetzt mit Semaphoren
+    3. Schieberegisterspeicher
+        - Bitmuster wird durch Kette von ein Bit grossen Speicherzellen (z.B. Flip-Flop) verschoben (vorne rein, hinten raus)
+        - Einzelne Bits sind nicht direkt adressierbar
+        - Für Umwandlung von seriellen in parallele Datenströme (und umgekehrt)
+        - z.B. LAN-Schnittstelle (z.B. Ethernet, Token-Ring)
+    4. FIFO
+        - Für Buffer (Ein- und Ausgabepuffer)
+        - Verwaltungsprinzip: Lese- und Schreibpointer
+        - z.B. für Schnittstelle der Tastatur
+    5. Stapelspeicher (Stack)
+        - LIFO Speicher
+        - Bekannteste Anwendung: Stack des Rechners (für lokale Variablen, etc.)
+        - Verwaltungsprinzip: Stackpointer (+ Grösse des Stackframes, die bekannt ist)
+    6. Assoziativspeicher
+        - Mit Teilinformation des Eintrags kann ganzer Eintrag gefunden werden
+        - Für Zugriff ist keine Adresse nötig (nur die Teilinformation des Inhalts) -> Inhaltsadressierte Speicher
+        - Es wird quasi eine Maske über die Einträge gelegt und nur der Bereich betrachtet, den die Maske freigibt
+        - z.B. Datenbank: Primärschlüssel ist Adressierungselement (und gleichzeitig Inhalt)
+
+Stand: S.409
+
