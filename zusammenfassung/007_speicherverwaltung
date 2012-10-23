@@ -1,16 +1,16 @@
 Speichersystem
 **************************************************************
 
-Hauptspeicher / Primärspeicher (Main memory):
-- RAM
-- Während der Ausführung befinden sich Programme und Daten hier
-- Direkt adressierbar: Speicheradresse führt direkt zu Inhalt
 
-
-Sekundärspeicher:
-- z.B. Festplatte
-- Zur persistenten Programm- und Datenspeicherung
-- Indirekt adressierbar mit Schnittstellen-Hardware und -Software
+Begriffe:
+    - Hauptspeicher / Primärspeicher (Main memory):
+        - RAM
+        - Während der Ausführung befinden sich Programme und Daten hier
+        - Direkt adressierbar: Speicheradresse führt direkt zu Inhalt
+    - Sekundärspeicher:
+        - z.B. Festplatte
+        - Zur persistenten Programm- und Datenspeicherung
+        - Indirekt adressierbar mit Schnittstellen-Hardware und -Software
 
 
 Grundlegende Speicherprinzipien:
@@ -44,5 +44,53 @@ Grundlegende Speicherprinzipien:
         - Es wird quasi eine Maske über die Einträge gelegt und nur der Bereich betrachtet, den die Maske freigibt
         - z.B. Datenbank: Primärschlüssel ist Adressierungselement (und gleichzeitig Inhalt)
 
-Stand: S.409
 
+Speicherhierarchie & Lokalitätsprinzip:
+- Anforderungen an Speicher:
+    - minimale Zugriffszeit
+    - minimale Kosten pro gespeichertes Bit
+    -> Widerspruch: Deshalb Speicherhierarchie
+- Arten:
+    - CPU-interne Register: Schnellster und teuerster Speicher (nur in sehr kleiner Anzahl vorhanden)
+    - Pufferspeicher (cache memory): Direkt an Prozessor angekoppelt (nicht sichtbar für Software)
+    - Hauptspeicher: DRAM, SRAM
+    - Massenspeicher: Billigster und langsamster Speicher
+- Ziel: Mit möglichst geringen Kosten im Mittel möglichst an die Zugriffszeit des schnellsten Speicher heranzukommen
+- Anwenderprogramm sieht einzigen grossen Adressraum (Speicherhierarchie ist vor ihm versteckt)
+- Zur Verarbeitung durch Prozessor müssen Anweisungen / Daten immer in Prozessornahe Speicher kopiert werden
+- Lokalitätseffekt:
+    - Der Arbeitsbereich W(t-T, t) bleibt für größere Zeiträume unverändert
+    -> Lokalitätseffekt ausnutzen: Arbeitsbereich möglichst im schnellen Speicher halten
+    - Räumliche Lokalität:
+        - "Wenn auf Adresse X zugegriffen wird, wird wahrscheinlich als nächstes auf Nachbaradresse zugegriffen"
+        - Erkenntnis: Wenn wir X in laden, auch gleich Nachbarbyte laden
+    - Zeitliche Lokalität:
+        - "Wenn auf Adresse X zugegriffen wird, wird wahrscheinlich schon bald nochmals auf Adresse X zugegriffen"
+        - Erkenntnis: Daten, auf die gerade zugegriffen wurde, im schnellsten Speicher halten
+    - Platz in den Registern ist begrenzt. Deshalb: Cache memory zwischen Registern und Hauptspeicher
+- Realisierung der Speicherhierarchie:
+    - Massenspeicher <--- Hauptspeicher <--- Pufferspeicher (cache) <--- (Adresstransformation) --- Register / CPU
+    - Mehrprozessorsystem:
+        - Eigener Hauptspeicher pro Prozess
+        - Problem: Datenkohärenz (CPU A schreibt in seinen Pufferspeicher. Was wenn B diese Info liest, befor sie in den Massenspeicher gelangt?)
+
+
+Cache:
+- CPU ist schneller, als Hauptspeicher. Damit Hauptspeicher CPU nicht bremst: Cache memory
+- Benutzer kann nicht auf cache memory zugreifen
+- Cache wird auf verschiedenen Leveln implementiert (Level1-Cache, Level2-Cache, Level3-Cache), oft direkt auf dem Chip
+- Hit rate: Anteil aller Speicherzugriffe, bei denen Info im Cache gefunden wird
+- Formel für Zugriffszeit:
+    - Teff = h ⋅ TC + (1 – h) ⋅ TM
+    - Teff: Effektive mittlere Zugriffszeit
+    - TC: Zugriffszeit Cache
+    - TM: Zugriffszeit Hauptspeichers
+    - h: Hit rate
+    - Charakteristische Eigenschaften:
+        - TC << TM (Zugriffszeit auf Cache ist viel kleiner als Zugriffszeit auf Hauptspeicher)
+        - h >> (1-h) (die meisten Infos können aus dem Cache geladen werden)
+- Funktionsweise:
+    - Cache-Steuerlogik (als Hardware realisiert) speichert benötigte Daten automatisch im Cache
+    -
+
+Stand: S.416

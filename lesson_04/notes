@@ -1,37 +1,13 @@
-Speichersystem:
-**************************************
 
-Arten von Speicher:
-- Massenspeicher (Zugriffszeit ziemlich langsam, sehr grosse Kapazität, billig)
-- Hauptspeicher
-- Cache-Speicher
-- Register (sehr schnell, sehr wenig Speicher, teuer)
--> schnelle Speicher sind klein und teuer
-
-
-Lokalitätseffekt:
-- WorkingSet w(t-T, t) bleibt für grössere Zeiträume gleich
-- Räumliche Lokalität:
-    - "Wenn auf Adresse X zugegriffen wird, wird wahrscheinlich als nächstes auf Nachbaradresse zugegriffen"
-    - Erkenntnis: Wenn wir X in RAM laden, auch gleich Nachbar in RAM laden
-- Zeitliche Lokalität:
-    - "Wenn auf Adresse X zugegriffen wird, wird wahrscheinlich schon bald nochmals auf Adresse X zugegriffen"
-    - Erkenntnis: Geladene Adressinhalte in schnellem Speicher cachen / puffern (z.B. im Register anstatt im RAM) -> Caching
 
 Caching:
-- Benutzer kann nicht auf cache memory zugreifen
 - Schwierigkeit: wenn gecachete Inhalte verändert werden, muss Cache geleert werden
-- Cache wird auf verschiedenen Leveln implementiert (CPU-Chip (Register, Level1-Cache), Level2-Cache, Hauptspeicher(RAM), Festplatte)
-- Berechnungen:
-    - Teff         = h       *  Tcache                  + (1 - h)       *  Tmainmemory
-    - Zugriffszeit = Hitrate * (Zugriffszeit auf Cache) + (1 - Hitrate) * (Zugriffszeit auf Hauptspeicher)
-    - Tcache << Tmainmemory (Zugriffszeit auf Cache ist viel schneller als Zugriffszeit auf main memory)
-    - h >> (1-h)
 - Cache ist assoziativer Speicher
 - Ein Cache-Eintrag besteht aus Adressinfo (tag) und cache-lines (Kopien von Hauptspeicherinhalten)
 - Vorgehen CPU: Ist etwas schon im Cache? Ja: aus cache laden. Nein: RAM überprüfen
 - Im Cache-Eintrag gibts zusätzlich ein Gültigkeitsbit (invalidated cache entries werden als erstes überschrieben), invalidiert wird z.B. bei Kontextwechsel
 - Peripherie ist nicht cachebar
+
 
 
 Virtual Memory:
