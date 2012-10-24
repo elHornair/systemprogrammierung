@@ -1,15 +1,4 @@
 
-
-Caching:
-- Schwierigkeit: wenn gecachete Inhalte verändert werden, muss Cache geleert werden
-- Cache ist assoziativer Speicher
-- Ein Cache-Eintrag besteht aus Adressinfo (tag) und cache-lines (Kopien von Hauptspeicherinhalten)
-- Vorgehen CPU: Ist etwas schon im Cache? Ja: aus cache laden. Nein: RAM überprüfen
-- Im Cache-Eintrag gibts zusätzlich ein Gültigkeitsbit (invalidated cache entries werden als erstes überschrieben), invalidiert wird z.B. bei Kontextwechsel
-- Peripherie ist nicht cachebar
-
-
-
 Virtual Memory:
 **************************************
 - Adressraum eines Programms:
@@ -64,37 +53,14 @@ TODO: check Aufgabe 004: 4.2
 Prüfung: man muss virtual memory umrechnungen machen können
 
 
+
+
 Speicherverwaltung
 **************************************
-- wir befinden uns auf dem Heap -> Dynamische Speicherverwaltung
 
-Heap:
-    - dort verwalten wir den Speicher selber (in C wirklich selber, in Java machts die JVM)
-    - Bsp: malloc(size_t size);
-    -> OS gibt uns einen zusammenhängenden (zumindest im vituellen Adressraum) Block auf dem Speicher zurück
-
-Ziele:
-    - flexible Zuordnungseinheiten (länge des zu allozierenden Bereichs)
-    - zusammenhängende Zuordnungseinheiten (sonst funktionieren ja z.B. Arrays nicht mehr)
-    - schnellstmögliche Zuordnung
-    - maximale Ausnutzung des vorhandenen Speicherplatzes
-        - Fragmentierungsproblem:
-            - Externe Fragmentierung:
-                - Im Speicher ist zwar noch genug Speicher vorhanden, allerdings nicht in zusammenhängender Form
-                - Lösung: Defragmentierung. Kann man hier aber nicht, da man keine Liste mit allen belegten Speicherfragmenten hat
-            - Interne Fragmentierung:
-                - Wenn sich z.B. ein Algorithmus einheitlich grosse Zuordnungseinheiten braucht -> es entstehen "nicht nutzbare reste" (verschnitt)
-    -> Problem: Diese Ziele sind teilweise widersprüchlich
 
 Zuordnungsarten:
-- Variable Zuordnungseinheiten
-    - Verkettete Liste
-    - Jeder Eintrag hat drei Einträge: Startadresse, Länge des Blocks, Pointer auf nächsten Block
-    - 2 Varianten: Freie oder besetzte Blocks speichern
-    - Algorithmen:
-        - first fit (erster freier Block, der gross genug ist, wird genommen) -> starke Fragmentierung
-        - next fit (wie "first fit", es wird aber bei der letzten Füllung gestartet) -> starke Fragmentierung
-        - best fit (block, der anforderung am knappesten erfüllt wird gesucht) -> Wahrsch. muss ganze Liste durchsucht werden, weniger Fragmentierung
+
 - Einheitliche Grössen finden (Einteilung in Grössenklassen)
     - "Ein Bereich im Adressraum übernümmt nur die kleinen Objekte", etc.
     - Nächste Klasse hat immer doppelt so grosse Bereiche wie vorherige Klasse 

@@ -1,7 +1,6 @@
 Speichersystem
 **************************************************************
 
-
 Begriffe:
     - Hauptspeicher / Primärspeicher (Main memory):
         - RAM
@@ -78,6 +77,7 @@ Speicherhierarchie & Lokalitätsprinzip:
 Cache:
 - CPU ist schneller, als Hauptspeicher. Damit Hauptspeicher CPU nicht bremst: Cache memory
 - Benutzer kann nicht auf cache memory zugreifen
+- Cache ist assoziativer Speicher
 - Cache wird auf verschiedenen Leveln implementiert (Level1-Cache, Level2-Cache, Level3-Cache), oft direkt auf dem Chip
 - Hit rate: Anteil aller Speicherzugriffe, bei denen Info im Cache gefunden wird
 - Formel für Zugriffszeit:
@@ -91,6 +91,81 @@ Cache:
         - h >> (1-h) (die meisten Infos können aus dem Cache geladen werden)
 - Funktionsweise:
     - Cache-Steuerlogik (als Hardware realisiert) speichert benötigte Daten automatisch im Cache
-    -
+    - Hauptspeicher wird in Blöcke der Grösse 2^i Byte aufgeteilt (Vorteil Zweierpotenzen: Hinterste i Bit von Adresse abschneiden => Blocknr.)
+    - Die Blöcke durchnummeriert (Block, der bei der Adresse 0 beginnt, ist der erste Block)
+    - Cache-Speicher besteht aus 2^k Cache-Zeilen (cache line)
+    - Cache-Zeile besteht aus Tag (Blocknr.), Gültigkeitsbit (valid flag) und einem einen Datenblock (der Grösse 2^i Byte)
+    - Blockweise Pufferung hat den Vorteil, dass auch benachbarte Bits gleich in den Cache geladen werden
+    - Bei Speicherzugriff wird geprüft, ob sich Datum bereits im Cache befindet:
+        1. Blocknummer bestimmen
+        2. In allen gültigen (valid flag == 1) Blocknummer vergleichen
+        3. Falls gefunden: Gesuchtes Byte aus Cache-Zeile extrahieren und dem Prozessor übergeben
+        4. Falls nicht gefunden: Entsprechende Cache-Zeile gesamthaft aus Hauptspeicher laden, gesuchtes Byte an Prozessor übergeben
+- Caching lohnt sich erst beim zweiten Zugriff auf ein Datum (oder wenn ein benachbartes Byte schon zuvor in den Cache geladen wurde)
+- Bei vollem Cache müssen nach und nach gecachete Inhalte überschreiben werden, obwohl sie noch gültig wären (invalide Zeilen werden zuerst überschrieben)
+- Peripherie ist nicht cachebar
+- Schwierigkeit: wenn gecachete Inhalte verändert werden, muss Cache geleert werden
 
-Stand: S.416
+
+Verwaltungsgrundlagen
+**************************************************************
+
+Abbildungsfunktion:
+- Beim Kompilieren werden Namen (z.B. von Variablen, Methoden) in Adressen umgewandelt => Programmadressen (virtuelle / logische Adressen)
+- Programmadressen != Speicheradressen (physische Adressen), sondern virtualisierte Adressen
+- Warum Virtualisierung: Damit die parallel auszuführenden Programme beliebig im Hauptspeicher platziert werden können
+- Von Programmadresse zu Speicheradresse: Adressumsetzung / Adresstransformation (findet im MMU-Chip statt -> Memory Management Unit)
+- Heute wird pro Adresse 1 Byte adressiert (traf für historische Rechner nicht zu)
+
+
+Dynamische Speicherbereitstellung:
+- Dynamische Daten: Daten, deren Lebenszeit kürzer ist, als die Programmlaufzeit
+- Stack: Speicher wird im Rahmen der Stack Frames automatisch alloziert
+- Heap: Lebensdauer orientiert sich nicht an der Ausführung von Funktionen -> Deshalb verwalten wir dort den Speicher selber (in C, in Java machts die JVM)
+- Heap-Management wird durch Programmiersprache zur Verfügung gestellt
+- Fester Adressbereich wird für Heap reserviert
+- Speicherblöcke auf dem Heap können variabel, fix oder stufenweise realisiert sein -> C  arbeitet mit variablen Bereichsgrössen (universell!)
+- C: malloc(size_t size) / free(void *ptr) -> OS gibt uns einen (im vituellen Adressraum) zusammenhängenden Block auf dem Speicher zurück
+
+
+Verwaltungsalgorithmen:
+- Anforderungen an die dynamische Speicherzuordnung:
+    - Flexible Zuordnungsgrösse: Länge des zu allozierenden Bereichs soll bytegenau erfüllt werden
+    - Zusammenhängende Zuordnungsbereiche: Sonst funktionieren z.B. Arrays nicht mehr
+    - Schnellstmögliche Zuordnung: Speicherallokation mit möglichst wenig Aufwand -> möglichst schnell verfügbar
+    - Maximale Speichernutzung: Keine oder wenige nutzlose Lücken zwischen Speicherblöcken
+    - Adressraumausrichtung: Einschränkende Regeln für Datentypen, die mehr als ein Byte umfassen
+    -> Problem: Teilweise widersprüchliche Ziele
+- Fragmentierung (Zerstückelung des freien Speichers):
+    - Extern:
+        - Im Speicher ist zwar noch genug Speicher vorhanden, allerdings nicht in zusammenhängender Form (Grund: Variable Blockgrössen in Heap-Verwaltung)
+        - Lösung wäre Defragmentierung. Kann man hier aber nicht, da man keine Liste mit allen belegten Speicherfragmenten hat
+    - Intern:
+        - Wenn ein Algorithmus einheitlich grosse Zuordnungseinheiten braucht -> es entstehen "nicht nutzbare reste" (Verschnitt)
+
+
+Grundprinzip der Speicherzuordnung:
+- Dienste des Heap-Managements: Bereich frei wählbarer grösse allozieren / Bereich wieder freigeben
+- Moderne Programmiersprachen: Implizite Freigabe
+    - Referenzen auf Variable werden gezählt (Code dazu wird vom Compiler eingefügt)
+    - Zu gegebener Zeit löscht Garbage Collector alle Variablen, auf die keine Referenzen mehr existieren
+
+
+Implementierungsvarianten Speicherzuordnung:
+- A: Variable Zuordnungsgröße
+    - Verwaltungsintern werden variabel grosse Blöcke belegt und freigegeben
+    - Verwaltungssoftware hat die Aufgabe, über belegte und freie Bereiche Buch zu führen
+    - Implementiert mit verketteter Liste für freie Speicher (meist geordnet nach Adressen -> benachbarte Freibereiche lassen sich leichter kombinieren)
+    - Jeder Eintrag hat drei Einträge: Startadresse, Länge des Blocks, Pointer auf nächsten Block
+    - 2 Varianten: Freie oder besetzte Blocks speichern
+    - Algorithmen für die Speicherreservierung:
+        - First Fit (erster freier Block wird genommen, wenn gross genug) -> starke Fragmentierung weil sich am Anfang des Speichers kleine Blöcke sammeln
+        - Next Fit (wie "First Fit", es wird aber bei der letzten Füllung gestartet) -> noch stärkere Fragmentierung (im ganzen Speicherbereich)
+        - Best Fit (Kleinstmöglicher Block wird gesucht) -> Wahrscheinlich muss ganze Liste durchsucht werden (Aufwand!), aber weniger Fragmentierung
+        - Worst Fit ("Best Fit" auf den Kopf gestellt) -> Will vermeiden, dass es unnützlich kleine Restlücken gibt, nur mässig leistungsfähig
+        -> Keiner davon optimal, kommt auf Anwendung an
+
+
+
+
+Stand: S.435, nach 2. abschnitt
