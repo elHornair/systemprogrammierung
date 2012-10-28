@@ -156,16 +156,70 @@ Implementierungsvarianten Speicherzuordnung:
     - Verwaltungsintern werden variabel grosse Blöcke belegt und freigegeben
     - Verwaltungssoftware hat die Aufgabe, über belegte und freie Bereiche Buch zu führen
     - Implementiert mit verketteter Liste für freie Speicher (meist geordnet nach Adressen -> benachbarte Freibereiche lassen sich leichter kombinieren)
-    - Jeder Eintrag hat drei Einträge: Startadresse, Länge des Blocks, Pointer auf nächsten Block
     - 2 Varianten: Freie oder besetzte Blocks speichern
+    - Jeder Eintrag hat drei Einträge: Startadresse, Länge des Blocks, Pointer auf nächsten Block
     - Algorithmen für die Speicherreservierung:
         - First Fit (erster freier Block wird genommen, wenn gross genug) -> starke Fragmentierung weil sich am Anfang des Speichers kleine Blöcke sammeln
         - Next Fit (wie "First Fit", es wird aber bei der letzten Füllung gestartet) -> noch stärkere Fragmentierung (im ganzen Speicherbereich)
         - Best Fit (Kleinstmöglicher Block wird gesucht) -> Wahrscheinlich muss ganze Liste durchsucht werden (Aufwand!), aber weniger Fragmentierung
         - Worst Fit ("Best Fit" auf den Kopf gestellt) -> Will vermeiden, dass es unnützlich kleine Restlücken gibt, nur mässig leistungsfähig
         -> Keiner davon optimal, kommt auf Anwendung an
+- Variante B: Feste Blockgrößen bzw. Größenklassen
+    - Mehrere Listen mit Blöcken einheitlicher Grösse
+    - Allokation: Angefragter Speicher wird auf die nächsthöhere feste Blockgrösse aufgerundet
+    - Objekt wird immer in die kleinste Klasse gelegt, in die es passt
+    - Nachteile: Rekombinieren benachbarter Bereiche ist sehr aufwendig (falls Listenausgleich) + Verwaltungsaufwand für Freilisten
+    - Algorithmus für Speicherreservierung:
+        - Quick Fit (getrennte Freiliste pro Blockgrösse) -> sehr schnelle Allokation, da pro Liste erster freier Block genommen werden kann
+    - Grössenklassen:
+        - Normalerweise 2^k Byte -> 16, 32, 64, ...
+        - Variante: 3 * 2^k Byte -> 16, 24, 32, 48, ... -> weniger Verschnitt
+    - Wenn keine freien Blöcke einer bestimmten Grössenklasse mehr vorhanden:
+        - Vom OS neuen Speicher anfordern
+        - Grössere Speicher aufteilen / kleinere kombinieren
+- Variante C: Mehrfache einer festen Blockgröße
+    - Speicherbereich wird in gleich grosse Blöcke aufgeteilt
+    - Wenn Anforderung grösser als Blockgrösse: Mehrere Blöcke kombinieren
+    - Interne Fragmentierung ist auf Blockgrösse begrenzt, allerdings kann externe Fragmentierung auftreten
+    - Interne Datenhaltung:
+        - Verkettete Liste
+        - Bitliste
+    - Suche nach freiem Block: first, next, best und worst fit
+- Variante D: Buddy-System
+    - Mischung aus den verschiedenen Zuordnungsarten
+    - Mit gesamtem Bereich starten
+    - Allokation: Gesamtbereich wird solange zweigeteilt, bis Anforderung gerade noch befriedigt werden kann (z.B. kommen 90KB in einen 128KB-Block)
+    - Effektiv verwendete Speicherbereiche sind immer 2-er Potenzen
+    - Auch hier entsteht Fragmentierung
+    - Blockorganisation kann mit Binärbaum dargestellt werden
+    - Buddies: Zwei Speicherbereiche der gleichen Grösse -> sind diese nebeneinander, kann sehr schnell auf den zweiten zugegriffen werden
+    - Chance, dass ein Buddy gesucht wird ist gross (da oft 2 gleich grosse Variablen verwendet werden)
+    - Speicherfreigabe: Zwei benachbarte Buddies werden zu einem grösseren Speicherbereich kombiniert
+    - Freibereiche werden in Freilisten verwaltet (Eine Liste pro Bereichsgrösse)
+
+
+Verwaltung von Prozessadressräumen:
+- Ausführbare Datei (executable) enthält alle Informationen, die OS zum Laden und Starten des Programms benötigt
+- OS verhindert, dass Programe auf den Adressraum anderer Programme zugreifen können
+- Compiler gruppiert logisch in verschiedene Teile:
+        - uninitialisierte Daten (int a;) -> .bss-Sektion (nur Speicher reservieren)
+        - vorinitialisierte Daten (int b=15;) ->.data-Sektion (Speicher reservieren und mit Initialwerten belegen)
+        - Programmcode -> .text-Sektion (Maschinencode in Speicher laden, mit Schreibschutz versehen, da sich dieser während der Ausführung nicht ändert)
+- Programm besteht aus:
+    - Kennung (magische Zahl)
+    - Programmstartadresse
+    - Sektionsbeschreibungen (Anahl, Startadressen, Grössen, Typen)
+    - .text (Maschinencode)
+    - .data (Initialisierungwerte der Variablen)
+    - Adressraum des Programms wird aufgeteilt in:
+        - Text-Region (Maschinencode des Programms)
+        - Data-Region (Initialisierungswerte für Variablen)
+        - BSS-Region (Variablendeklarationen)
+        - Heap-Region
+        - Stack-Region (Heap und Stack wachsen aufeinander zu)
+        - Argument-Region (Argumente für das Programm)
+        - Environment-Region (z.B. PATH)
 
 
 
-
-Stand: S.435, nach 2. abschnitt
+Stand: S. 460

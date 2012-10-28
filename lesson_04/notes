@@ -1,20 +1,6 @@
 
 Virtual Memory:
 **************************************
-- Adressraum eines Programms:
-    - Compiler gruppiert logisch in Folgende Teile
-        - uninitialisierte Daten (.bss-Sektion)
-        - vorinitialisierte Daten (.data-Sektion)
-        - Programmcode (-text-Sektion)
-    - OS verhindert, dass Programe auf den Adressraum anderer Programme zugreifen können
-    - Adressraum des Programms wird aufgeteilt in:
-        - Text-Region (Maschinencode des Programms)
-        - Data-Region (Initialisierungswerte für Variablen)
-        - BSS-Region (Variablendeklarationen)
-        - Heap-Region
-        - Stack-Region (Heap und Stack 2wachsen aufeinander zu)
-        - Argument-Region (Argumente für das Programm)
-        - Environment-Region (z.B. PATH)
 - Virtualisierung des Speichers:
     - Jeder Prozess hat gesamten Adressraum zur Verfügung (es gibt aber ja den ganzen Speicher nur einmal)
     - Der Speicher jedes Prozesses muss vor den anderen Prozessen geschützt werden
@@ -51,33 +37,5 @@ Formeln:
 
 TODO: check Aufgabe 004: 4.2
 Prüfung: man muss virtual memory umrechnungen machen können
-
-
-
-
-Speicherverwaltung
-**************************************
-
-
-Zuordnungsarten:
-
-- Einheitliche Grössen finden (Einteilung in Grössenklassen)
-    - "Ein Bereich im Adressraum übernümmt nur die kleinen Objekte", etc.
-    - Nächste Klasse hat immer doppelt so grosse Bereiche wie vorherige Klasse 
-    - Objekt wird immer in die kleinste Klasse gelegt, in die es passt
-    - Algorithmen:
-        - quick fit (durch die fixe grösse kann innerhalb der grössenklasse sofort alloziert werden)
-            -> mehraufwand durch verwaltung der grössenklassen
-            -> wie weiss man, wie gross der platz sein muss, der für die klassen reserviert wird? 
-- Man nimmt einheitliche Grösse an und definiert, dass alle Belegungen mehrfache dieser Grösse sind
-    - Startadresse wird immer auf Mehrfache einer festen Grösse gelegt
-    -> Nachteil: Interne und externe Fragmentierung
-
-=> Lösung: Buddysystem (Mischung aus den verschiedenen Zuordnungsarten)
-    - starten mit gesamtem Bereich
-    - Bereich solange halbieren, wie gesuchte Grösse grade noch Platz hat (z.B. kommen 90KB in einen 128KB-Block)
-    - Wenn "Buddy" gesucht wird (Speicherbereich, der so gross ist, wie ein schon existierender): sehr schneller Zugriff
-    - Chance, dass ein Buddy gesucht wird ist gross (da oft 2 gleich grosse Variablen verwendet werden)
-
 
 
