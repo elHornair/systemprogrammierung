@@ -31,9 +31,9 @@ Einordnung im Computersystem
 **************************************************************
 - Zwischen Benutzerapplikationen und Rechnerhardware
 - Besteht aus Betriebssystemkern und Betriebssystemdiensten
-- Setzt auf Prozessorarchitektur (charakterisiert durch Maschinenbefehlen und Registeraufbau -> Instruktionssatzarchitektur (ISA))
+- Setzt auf Prozessorarchitektur auf (charakterisiert durch Maschinenbefehle und Registeraufbau -> Instruktionssatzarchitektur (ISA))
 - Bietet API für Andwendungen an
-- Systemprogramme = Betriebssyste + Entwicklertools (Compiler, Editor, Kommandointerpreter)
+- Systemprogramme = Betriebssystem + Entwicklertools (Compiler, Editor, Kommandointerpreter)
 
 
 Betriebssystemarten

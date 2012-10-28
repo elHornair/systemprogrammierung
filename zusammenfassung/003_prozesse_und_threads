@@ -21,7 +21,7 @@ Begriffe / Analogien:
 - Prozess: Durchführen, Umsetzen des Kochrezepts (-> Kochen)
 - Thread: Parallel ablaufende Aktivitäten innerhalb einer gemeinsamen Prozessumgebung (jeder Thread gehört zu einem Prozess, ein Prozess kann einen oder mehrere Threads haben)
 - Nebenläufige Prozesse: Quasiparallele Ausführung auf einem Einprozessorsystem
-- Task: Alternativer Begriff zu Prozes
+- Task: Alternativer Begriff zu Prozess
 
 
 Prozessmodell
@@ -31,7 +31,7 @@ Grundprinzip:
 - Da Anzahl Prozesse > Anzahl Prozessoren, schaltet Betriebssystem automatisch zwischen diesen um (da dies sehr schnell geschieht, scheinen sie parallel zu laufen)
 - Jeder Prozess hat virtuell den ganzen Rechner für sich alleine
 - Was ist ein Prozess aus OS-Sicht?
-    - Belegt einen Datenbereich (inkl. Stach und Heap)
+    - Belegt einen Datenbereich (inkl. Stack und Heap)
     - Belegt einen Programmcodebereich
     - Belegt einen PCB:
         - Process Control Block
@@ -54,7 +54,7 @@ Ausführbares Programm (Datei):
     - Programm (inkl. Konstanten) laden (Programm in RAM laden, PCB erstellen, Reservation Speicherbereich für Stack, Initialwerte besetzen, ...)
     - Starten (Program Counter auf 1. Instruktion setzen)
     - Programmablauf (Konkurrierung mit anderen Prozessen, kann Systemdienste nutzen), mehrere Instanzen des Programms unterscheiden sich durch ihre PID
-    - Bendigung (Durch Return oder schwerwiegenden Fehler) -> Return-Wert, Speicherfreigabe, PCB wird gelöscht
+    - Beendigung (Durch Return oder schwerwiegenden Fehler) -> Return-Wert, Speicherfreigabe, PCB wird gelöscht
 
 
 Prozesserzeugung und Terminierung:
@@ -93,7 +93,7 @@ Prozesserzeugung und Terminierung:
 - Zombieprozess:
     - Prozess, der keinen Code mehr ausführt, aber noch einen Eintrag in der Prozesstabelle belegt
     - 2 Fälle:
-        - Wenn Parent-Prozess wait() aufruft, bevor Child-Prozess exit() aufgerufen hat -> Rückgabewert und Beendigunsstatus müssen noch für Parent bereitgehalten werden
+        - Wenn Child-Prozess exit() aufruft, bevor Parent-Prozess wait() aufgerufen hat -> Rückgabewert und Beendigunsstatus müssen noch für Parent bereitgehalten werden
         - Wenn Parent-Prozess Child-Prozess erstellt und sich dann beendet -> Child-Prozess wird zu Waise-Prozess, kann aber noch weiterlaufen (Init-Prozess (PID=1) wird zu Parent)
     - Parent-Prozess muss wait() aufrufen, wird dadurch aber blockiert, bis Child beendet wird
     - Lösung: Parent forkt Child1 -> Child1 forkt Child2 -> Child1 beendet sich selbst -> Child2 wird von Init-Prozess adoptiert (->selbständiger Prozess mittels fork() erstellt) 
@@ -103,7 +103,7 @@ Prozessorzuteilungsstrategien
 **************************************************************
 
 Quasiparallelität im Einprozessorsystem:
-- Problem: Mehr Prozesse als Prosessoren -> mehrere Prozesse auf gleichem Prozessor
+- Problem: Mehr Prozesse als Prozessoren -> mehrere Prozesse auf gleichem Prozessor
 - Prozesse sind oft am Warten (I/O, Netzwerkschnittstellen, ...)
 - Regeln:
     - OS muss Prozesse "schlafen legen" können
@@ -150,7 +150,7 @@ Zuteilungsstrategien:
         - Round Robin
         - Alle 40 (Beispiel) Zeiteinheiten wird Prozess gewechselt, oder natürlich, wenn er eh fertig ist
         - Verdrängend
-        - Spieltart: Anzahl der Zeiteinheiten variabel machen (abhängig von Prozess oder Last)
+        - Spielart: Anzahl der Zeiteinheiten variabel machen (abhängig von Prozess oder Last)
         -> FIFO mit Zeitumschaltung
     - ML (wichtig):
         - Multi-Level Priority
@@ -164,7 +164,7 @@ Zuteilungsstrategien:
         - Ähnlich wie ML
         - Auswahl nächster Prozess: Zuerst nach Priorität, bei gleicher Priorität FIFO (oder RR)
         - Alle Prozesse beginnen hochpriorisiert
-        - Nach bestimmter Laufzeit wreden Prozesse runterpriorisiert
+        - Nach bestimmter Laufzeit werden Prozesse runterpriorisiert
         - Tiefer priorisierte Prozesse dürfen länger laufen (wenn sie dann drankommen)
         - Vorteil: Aushungern der tief priorisierten Prozesse wird verhindert
         - Vorteil: User-Feedback für I/O-lastige Prozesse bleibt schnell, denn sobald diese Prozesse "Wartend" werden, wird ihre Prio wieder zurückgesetzt

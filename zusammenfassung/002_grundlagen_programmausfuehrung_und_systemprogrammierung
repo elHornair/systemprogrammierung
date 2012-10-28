@@ -85,6 +85,7 @@ Grundlagen des Adressraums
     - Grund: Performance, denn so ist unter Umständen nur ein Lesezugriff (anstelle von zwei) nögit 
     - z.B: Adressnummer muss durch 4 (oder 2) teilbar sein
 
+
 Grundlagen der Programmausführung
 **************************************************************
 Funktionsweise Stack:
