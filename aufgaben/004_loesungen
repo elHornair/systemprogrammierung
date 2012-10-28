@@ -22,21 +22,23 @@ E 4.2:
     e) Der zweite Teil der logischen Adr. ist die relative Adr. - Sie kann bestimmt werden, indem die logische Adresse modulo Seitengrösse gerechnet wird
 
 
-im virtuellen speicher: Die Blöcke werden Seiten (pages) genannt und haben eine feste Länge von 2^k Byte
-
-
-
-Musterlösung E 4.2:
+E 4.2 (Musterlösung):
 a)
-Gegeben:
-Grösse virtuelle Adressen: 32 Bit
-Grösse Speicheradressen: 24 Bit
-Seitengröße: 2 KB = 2^11
-Grösse virtueller Adressraum: 2^32 Möglichkeiten, ein Byte zu adressieren => Adressraum ist 2^32 Byte gross
-Anzahl Seiten: 2^32 Byte / 2^11 Byte = 2^13
-b) 2^13
+    Gegeben:
+        Grösse virtuelle Adressen: 32 Bit
+        Grösse Speicheradressen: 24 Bit
+        Seitengröße: 2 KB = 2^11
+    Berechnungen:
+        Grösse virtueller Adressraum: 2^32 Möglichkeiten, ein Byte zu adressieren => Adressraum ist 2^32 Byte gross
+        Anzahl Seiten: 2^32 Byte / 2^11 Byte = 2^13
+    b) Ebenfalls 2^13
+    c) Ebenfalls 2^13
+    d) ...?
 
--> TODO: check this
+
+
+
+
 
 
 
