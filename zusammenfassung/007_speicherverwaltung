@@ -221,5 +221,98 @@ Verwaltung von Prozessadressräumen:
         - Environment-Region (z.B. PATH)
 
 
+Virtueller Speicher
+**************************************************************
 
-Stand: S. 460
+Virtualisierung des Speichers:
+- Jeder Prozess hat virtuell gesamten Adressraum zur Verfügung, d.h. kann ihn beliebig belegen
+- Jeder Prozess ist gegen Fehlzugriffe aller anderen Prozesse geschützt
+- Ensteht Knappheit im Hauptspeicher werden Inhalte auf Hintergrundspeicher ausgelagert
+- Virtual Memory Manager übernimmt die Virtualisierung
+
+
+Adressumsetzung (address translation):
+- Mapping vom virtuellen Speicher zum Realen ("wenn Prozess X auf Adresse Y zugreift, dann schaue in Adresse Z")
+- Sehr schwierige Aufgabe
+- Aufgabe wird von Adressumsetzungshardware übernommen (MMU). Diese sitzt zwischen CPU und Speicherbus
+- MMU ist Hardware
+- Umsetzungstabellen:
+    - Eine pro Prozess
+    - Legt fest, wie virtuelle Speicherregionen des Prozesses in physischen Speicher umgesetzt werden
+    - MMU muss über Prozessumschaltung informiert werden, damit sie weiss, welche Umsetzungstabelle sie verwenden muss
+    - Problem: Jeder Speicherzugriff führt zu zwei Speicherzugriffen (1. Rausfinden, wo Info ist (Umsetzungstabelle); 2. Auf Datum zugreifen)
+    - Lösung: Pufferung von Tabelleninhalten in der MMU
+    - Vorteile Umsetzungstabelle:
+        1. Prozesse können frei über ihren privaten virtuellen Adressraum verfügen
+        2. Prozesse müssen keine Rücksicht nehmen auf physisch effektiv vorhandene Adressbereiche 
+        3. Jeder Prozess "sieht" nur seine eigenen Speicherinhalte -> Speicherschutz
+- Umsetzungsregel: Regel, die festlegt, wie man von logischer (virtueller) Adresse zu physischer Adresse kommt
+- 3 Möglichkeiten zur Adressumsetzung:
+    1. Segmentbasierte Umsetzung:
+        - Phyischer Speicher wird segmentweise zur Verfügung gestellt (Segmente haben unterschiedliche Grössen)
+        - Prozess kann mehrere Segmente besetzen
+        - Nachteil: Externe Fragmentierung
+        - Umsetzungsregel:
+            - AP = AL + AS
+            - AP: physische Adresse
+            - AL: logische Adresse
+            - AS: Segmentstartadresse
+        - Segmentdeskriptorentabelle:
+            - Enthält pro Segmentnummer einen Eintrag
+            - Eintrag enthält Segmentstartadresse und Segmentlänge
+            - Falls AL (logische Adresse) grösser als Segmentlänge -> Fehler
+    2. Seitenbasierte Umsetzung:
+        - Virtueller Speicherbereich wird in Blöcke fester Grösse aufgeteilt -> Seiten (pages)
+        - Blockgrösse: 2^k Byte (normalerweise 4 KB) -> Vereinfachte Realisierung der MMU
+        - Physischer Speicherbereich wird in Blöcke gleicher Grösse aufgeteilt -> Seitenrahmen (page frames)
+        - Vorteil: Keine externe Fragmentierung
+        - Adressumsetzung: Von page auf page frame schliessen
+        - Eine Umsetzungstabelle pro Prozess
+        - Inhalt von Eintrag in Umsetzungstabelle:
+            - Seitenrahmennummer
+            - Gültigkeitsbit
+            - Schreibschutzbit
+        - Umsetzungsregel:
+            - AP = AL + v * S
+            - AP: physische Adresse
+            - AL: logische Adresse
+            - v: Verschiebungsfaktor (vorzeichenbehafteter Ganzzahlwert, ergibt sich aus Umsetzungstabelle)
+            - S: Seitengröße (2^k, k ist konstant)
+        - Welcher Eintrag in Umsetzungstabelle gilt für bestimmte virtuelle Adresse?
+            -> Seiten werden beginnent bei Null lückenlos aufsteigend durchnummeriert
+            - PV = AL Div S
+            - PV: Seitennummer
+            - AL: logische Adresse
+            - S: Seitengröße (2^k, k ist konstant)
+            - Div: Ganzzahldivision (Hier einfach durch Bitshifting, weil k immer Zweierpotenz -> k niederwertigste Bit wegwerfen)
+        - Bestimmung der Seitenrahmennummer:
+            - PP = PV + v
+            - PP: Seitenrahmennummer (positiver Ganzzahlwert inklusive 0)
+            - PV: Seitennummer (positiver Ganzzahlwert inklusive 0)
+            - v: Verschiebungsfaktor (vorzeichenbehafteter Ganzzahlwert)
+        - Bestimmung der Relativadresse (page offset):
+            - AR = AL Mod S
+            - AR: Relativadresse (relativ zu Seitenbeginn)
+            - AL: logische Adresse
+            - S: Seitengröße (2^k, k ist konstant)
+            - Mod: Modulo-Division (Hier einfach durch Bitshifting, weil k immer Zweierpotenz -> k niederwertigste Bit sind der Modulus)
+        - Vorgehen Umsetzung:
+            1. Seitennummer PV aus AL extrahieren -> Index in Umsetzungstabelle
+            2. Seitenrahmennummer PP wird aus Umsetzungstabelle entnommen
+            3. PP wird mit S multipliziert -> Seitenrahmenstartadresse ist bekannt
+            4. Relativadresse AR zu Seitenrahmenstartadresse addieren
+        - Platzbedarf pro Umsetzungstabelle (d.h. pro Prozess):
+            - Platzbedarf in Byte = 2^m * t / s
+            - m: Anzahl Adressbit der virtuellen Adresse
+            - t: Größe eines Seitendeskriptors in Anzahl an Byte
+            - s: Seitengröße in Anzahl Byte (Annahme: pro Adresse werde 1 Byte an Speicherplatz adressiert)
+            - Beispiel:
+                -> m = 32, s = 4 KB (= 2^12 Byte), t = 4 Byte
+                -> Platzbedarf = 2^22 Byte = 4 MB (4 * [2^32]/[2^12] = 4 * [2^20] = 4 * 1024 KB = 4 MB)
+        -> Umsetzungstabellen sind also speicherplatzmässig sehr teuer
+        - Lösung: Mehrstufige Tabellen (kaskadierende Tabellen)
+            - Erster Tabellenzugriff liefert nicht direkt Seitenrahmennummer, sondern Startadresse einer zweiten Tabelle
+            - Es gibt auch dreistufige Lösungen
+            - Vorteil: Wenn virtueller Adressraum nur spärlich belegt ist (in der Praxis oft der Fall)
+            - Wichtig: Gut funktionierender TLB, da sonst drei (bzw. vier) Speicherzugriffe pro CPU-Zugriff
+    3. Segment- und seitenbasierte Adressumsetzung: Mischform

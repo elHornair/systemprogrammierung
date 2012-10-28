@@ -1,38 +1,8 @@
 
 Virtual Memory:
 **************************************
-- Virtualisierung des Speichers:
-    - Jeder Prozess hat gesamten Adressraum zur Verfügung (es gibt aber ja den ganzen Speicher nur einmal)
-    - Der Speicher jedes Prozesses muss vor den anderen Prozessen geschützt werden
-    -> sehr schwierige Aufgabe
-    - Aufgabe wird von Adressumsetzungshardware übernommen (MMU). Diese sitzt zwischen CPU und Speicherbus
-- Adressumsetzung:
-    - Mapping vom virtuellen Speicher zum Realen
-    - Beispiel: "wenn Prozess X auf Adresse Y zugreift, dann schaue in Adresse Z"
-    - Das macht MMU (memory management unit)
-    -> d.h. jeder Speicherzugriff wird eigentlich zu zwei Speicherzugriffen (1. rausfinden, wo das Datum ist, 2. auf Datum zugreifen)
-    - Seitenbasierte Umsetzung:
-        - Seite: grösse des virtuellen Frames?
-        - Verschnitt: wenn virtueller Speicher im realen Speicher verschnitten ist
-    - Verschiebungsfaktor:
-        - Physikalische Adr. = logische Addr. + (v * |Page|)
-        - Seitennumer = ((logische Adr.)/(|Page|)) + (Ganzzahl)
-        - Beispiel angeschaut. Siehe http://edu.panter.ch/VirtualMemory/090%20Nutzungsbeispiel
-    - Vorteile Umsetzungstabelle:
-        1. Prozesse können so tun, als ob sie den ganzen Speicher zur Verfügung hätten
-        2. ...?
-        3. Durch die Umsetzung kann es garnicht passieren, dass Prozess A auf Speicher von Prozess B zugreift
-    - 2^(adressbit) * (Grösse Seitendesk.)/(Seitengrösse) = Speicherplatz, der pro Umsetzungstabelle benötigt wird
-    - Umsetzungstabellen sind also speicherplatzmässig sehr teuer
-    - Lösung: kaskadierende Tabellen (siehe http://edu.panter.ch/VirtualMemory/100%20PentiumProzessor)
 
-Formeln:
-    - Blocknummer = Adresse / Blockgröße (ganzzahldivision ohne rest)
-    - AP = AL + v * S
-        AP: physische Adresse (= Speicheradresse)
-        AL: logische Adresse (= Programmadresse bzw. virtuelle Adresse)
-        v: Verschiebungsfaktor (vorzeichenbehafteter Ganzzahlwert)
-        S: Seitengröße (2k, k ist konstant)
+
 
 
 TODO: check Aufgabe 004: 4.2
