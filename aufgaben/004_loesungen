@@ -30,9 +30,9 @@ a)
         Seitengröße: 2 KB = 2^11 Byte
     Berechnungen:
         Grösse virtueller Adressraum: 2^32 Möglichkeiten, ein Byte zu adressieren => Adressraum ist 2^32 Byte gross
-        Anzahl Seiten: 2^32 Byte / 2^11 Byte = 2^13
-    b) Ebenfalls 2^13
-    c) Ebenfalls 2^13
+        Anzahl Seiten: 2^32 Byte / 2^11 Byte = 2^21
+    b) Ebenfalls 2^21 -> Nope, denn die physischen Speicheradressen sind nur 24 Bit lang (also gibts weniger Seitenrahmen als Seiten)
+    c) Ebenfalls 2^21
     d) ...?
 
 

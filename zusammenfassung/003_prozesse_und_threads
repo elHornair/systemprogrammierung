@@ -150,6 +150,7 @@ Zuteilungsstrategien:
         - Round Robin
         - Alle 40 (Beispiel) Zeiteinheiten wird Prozess gewechselt, oder natürlich, wenn er eh fertig ist
         - Verdrängend
+        - Bemerkung: Nach allen 40 (Beispiel) Zeiteinheiten wird überprüft. Dazwischen wird ein Prozess nie verdrängt (Er kann dann nur von selbst stoppen)
         - Spielart: Anzahl der Zeiteinheiten variabel machen (abhängig von Prozess oder Last)
         -> FIFO mit Zeitumschaltung
     - ML (wichtig):
