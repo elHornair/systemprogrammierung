@@ -4,15 +4,15 @@ E 4.1:
     c) Adresse: Hex 34af6784 = Bin 110100101011110110011110000100
        Blockgrösse: 4KB = 2^12
        Blocknr: Adresse / Blockgrösse = 110100101011110110011110000100 / 2^12
-                => Bitshift uf 12 Stellen, also rechteste 12 Stellen löschen
+                => Bitshift um 12 Stellen, also rechteste 12 Stellen löschen
                 => 110100101011110110 = Blocknummer
     d) Relativadresse = Zugriffsadresse % Blockgröße (mod)
     e) Die relative Adresse sind die (n-1) rechtesten Speicherbits der Zugriffsadresse
     f) Adresse: Hex 34af6784 = Bin 110100101011110110011110000100
        Blockgrösse: 4KB = 2^12
        Relativadresse: Zugriffsadresse % Blockgröße
-                       => die (n-1) = (12-1) = 11 hintersten Speicherbits der Zugriffsadresse
-                       => 11110000100
+                       => die n = 12 hintersten Speicherbits der Zugriffsadresse
+                       => 011110000100
 
 E 4.2:
     a) ...?
@@ -27,7 +27,7 @@ a)
     Gegeben:
         Grösse virtuelle Adressen: 32 Bit
         Grösse Speicheradressen: 24 Bit
-        Seitengröße: 2 KB = 2^11
+        Seitengröße: 2 KB = 2^11 Byte
     Berechnungen:
         Grösse virtueller Adressraum: 2^32 Möglichkeiten, ein Byte zu adressieren => Adressraum ist 2^32 Byte gross
         Anzahl Seiten: 2^32 Byte / 2^11 Byte = 2^13
