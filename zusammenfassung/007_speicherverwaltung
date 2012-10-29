@@ -41,7 +41,7 @@ Grundlegende Speicherprinzipien:
         - Mit Teilinformation des Eintrags kann ganzer Eintrag gefunden werden
         - Für Zugriff ist keine Adresse nötig (nur die Teilinformation des Inhalts) -> Inhaltsadressierte Speicher
         - Es wird quasi eine Maske über die Einträge gelegt und nur der Bereich betrachtet, den die Maske freigibt
-        - z.B. Datenbank: Primärschlüssel ist Adressierungselement (und gleichzeitig Inhalt)
+        - z.B. Datenbank: Primärschlüssel ist Adressierungselement (und gleichzeitig Inhalt), aber auch "Name" kann Adressierungselement sein
 
 
 Speicherhierarchie & Lokalitätsprinzip:
@@ -54,9 +54,9 @@ Speicherhierarchie & Lokalitätsprinzip:
     - Pufferspeicher (cache memory): Direkt an Prozessor angekoppelt (nicht sichtbar für Software)
     - Hauptspeicher: DRAM, SRAM
     - Massenspeicher: Billigster und langsamster Speicher
-- Ziel: Mit möglichst geringen Kosten im Mittel möglichst an die Zugriffszeit des schnellsten Speicher heranzukommen
+- Ziel: Mit möglichst geringen Kosten im Mittel möglichst an die Zugriffszeit des schnellsten Speichers heranzukommen
 - Anwenderprogramm sieht einzigen grossen Adressraum (Speicherhierarchie ist vor ihm versteckt)
-- Zur Verarbeitung durch Prozessor müssen Anweisungen / Daten immer in Prozessornahe Speicher kopiert werden
+- Zur Verarbeitung durch Prozessor müssen Anweisungen / Daten immer in prozessornahe Speicher kopiert werden
 - Lokalitätseffekt:
     - Der Arbeitsbereich W(t-T, t) bleibt für größere Zeiträume unverändert
     -> Lokalitätseffekt ausnutzen: Arbeitsbereich möglichst im schnellen Speicher halten
@@ -71,7 +71,7 @@ Speicherhierarchie & Lokalitätsprinzip:
     - Massenspeicher <--- Hauptspeicher <--- Pufferspeicher (cache) <--- (Adresstransformation) --- Register / CPU
     - Mehrprozessorsystem:
         - Eigener Hauptspeicher pro Prozess
-        - Problem: Datenkohärenz (CPU A schreibt in seinen Pufferspeicher. Was wenn B diese Info liest, befor sie in den Massenspeicher gelangt?)
+        - Problem: Datenkohärenz (CPU A schreibt in seinen Pufferspeicher. Was wenn B diese Info liest, bevor sie in den Massenspeicher gelangt?)
 
 
 Cache:
@@ -84,7 +84,7 @@ Cache:
     - Teff = h ⋅ TC + (1 – h) ⋅ TM
     - Teff: Effektive mittlere Zugriffszeit
     - TC: Zugriffszeit Cache
-    - TM: Zugriffszeit Hauptspeichers
+    - TM: Zugriffszeit Hauptspeicher
     - h: Hit rate
     - Charakteristische Eigenschaften:
         - TC << TM (Zugriffszeit auf Cache ist viel kleiner als Zugriffszeit auf Hauptspeicher)
@@ -145,7 +145,7 @@ Verwaltungsalgorithmen:
 
 
 Grundprinzip der Speicherzuordnung:
-- Dienste des Heap-Managements: Bereich frei wählbarer grösse allozieren / Bereich wieder freigeben
+- Dienste des Heap-Managements: Bereich frei wählbarer Grösse allozieren / Bereich wieder freigeben
 - Moderne Programmiersprachen: Implizite Freigabe
     - Referenzen auf Variable werden gezählt (Code dazu wird vom Compiler eingefügt)
     - Zu gegebener Zeit löscht Garbage Collector alle Variablen, auf die keine Referenzen mehr existieren
@@ -199,7 +199,7 @@ Implementierungsvarianten Speicherzuordnung:
 
 
 Verwaltung von Prozessadressräumen:
-- Ausführbare Datei (executable) enthält alle Informationen, die OS zum Laden und Starten des Programms benötigt
+- Ausführbare Datei (executable) enthält alle Informationen, die OS zum Laden und Starten des Programms benötigt werden
 - OS verhindert, dass Programe auf den Adressraum anderer Programme zugreifen können
 - Compiler gruppiert logisch in verschiedene Teile:
         - uninitialisierte Daten (int a;) -> .bss-Sektion (nur Speicher reservieren)
@@ -208,7 +208,7 @@ Verwaltung von Prozessadressräumen:
 - Programm besteht aus:
     - Kennung (magische Zahl)
     - Programmstartadresse
-    - Sektionsbeschreibungen (Anahl, Startadressen, Grössen, Typen)
+    - Sektionsbeschreibungen (Anzahl, Startadressen, Grössen, Typen)
     - .text (Maschinencode)
     - .data (Initialisierungwerte der Variablen)
     - Adressraum des Programms wird aufgeteilt in:
@@ -279,7 +279,7 @@ Adressumsetzung (address translation):
             - v: Verschiebungsfaktor (vorzeichenbehafteter Ganzzahlwert, ergibt sich aus Umsetzungstabelle)
             - S: Seitengröße (2^k, k ist konstant)
         - Welcher Eintrag in Umsetzungstabelle gilt für bestimmte virtuelle Adresse?
-            -> Seiten werden beginnent bei Null lückenlos aufsteigend durchnummeriert
+            -> Seiten werden beginnend bei Null lückenlos aufsteigend durchnummeriert
             - PV = AL Div S
             - PV: Seitennummer
             - AL: logische Adresse
@@ -313,6 +313,6 @@ Adressumsetzung (address translation):
         - Lösung: Mehrstufige Tabellen (kaskadierende Tabellen)
             - Erster Tabellenzugriff liefert nicht direkt Seitenrahmennummer, sondern Startadresse einer zweiten Tabelle
             - Es gibt auch dreistufige Lösungen
-            - Vorteil: Wenn virtueller Adressraum nur spärlich belegt ist (in der Praxis oft der Fall)
+            - Vorteil, wenn virtueller Adressraum nur spärlich belegt ist (in der Praxis oft der Fall)
             - Wichtig: Gut funktionierender TLB, da sonst drei (bzw. vier) Speicherzugriffe pro CPU-Zugriff
     3. Segment- und seitenbasierte Adressumsetzung: Mischform

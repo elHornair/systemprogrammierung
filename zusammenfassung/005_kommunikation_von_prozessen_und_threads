@@ -12,11 +12,10 @@ Nachrichtenbasierte Verfahren:
     - Synchron:
         - Sender muss warten, bis Empfänger zur Entgegennahme bereit ist (Rendezvous)
     - Asynchron:
-        - Sender läuft weiter, auch wenn Empfänger im moment nicht für Datenempfang bereit ist
+        - Sender läuft weiter, auch wenn Empfänger im Moment nicht für Datenempfang bereit ist
         - Daten kommen in Nachrichtenpuffer (z.B. message queue) und werden vom Empfänger abgeholt, wenn er bereit ist
     - Typische Methoden von message queue: "send(destination, &message);" und"receive(source, &message);"
 - Beispiel Unix-Pipes: Leiten Ausgabedaten von Prozessen direkt als Eingabedaten für andere Prozesse weiter (e.g. "who | sort | more")
-
 
 
 Kommunikation im Schichtenmodell:

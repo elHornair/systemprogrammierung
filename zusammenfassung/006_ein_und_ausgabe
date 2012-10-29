@@ -18,7 +18,7 @@ Was ist Peripherie?
 2. Ein-/Ausgabe mittels Programmunterbrechungen (Interrupt)
 - Prinzip: Während auf Peripheriegerät gewartet wird, widmet sich CPU anderen Aufgaben. Sobald Peripheriegerät bereit ist, sendet es Interruptsignal
 - Interrupt:
-    - Unterbrechungssignal für CPU - hat höchste Priorität überhaupt (CPU stopt sofort und behandelt Interrupt)
+    - Unterbrechungssignal für CPU - hat höchste Priorität überhaupt (CPU stoppt sofort und behandelt Interrupt)
     - Interrupt-Check ist fest in der CPU verdrahtet
     - CPU-Loop muss also ergänzt werden:
         - Fetch (Instruktion holen)
@@ -60,7 +60,7 @@ Was ist Peripherie?
     2. DMA Betrieb:
         - Datentransfer durch DMA-Kontroller
         - CPU kann derweil etwas anderes machen
-        - Achtung: Während DMA-Prozess ist BUS blockiert, d.h. CPU muss unterbrechen, sobald sie Bus braucht
+        - Achtung: Während DMA-Prozess ist Bus blockiert, d.h. CPU muss unterbrechen, sobald sie Bus braucht
     3. Abschluss: Info, obs funktioniert hat, so und soviel wurde übertragen (mit Interrupt signalisiert)
 - Wann wird DMA-Betrieb eingesetzt?
     - Übertragung von grosser Datenmenge zu langsamem Takt (wenn CPU viel schneller ist, als I/O), z.B. Diskettenlaufwerk, serielle Schnittstelle
@@ -71,11 +71,9 @@ Was ist Peripherie?
 
 Treiber:
 - Ein-/Ausgabesystem des Betriebssystems ermöglicht Datentransfer zwischen Anwenderprogrammen und Peripherie
-- Treiber: Software, welche die Verbindung zwischen Anwenderprogramm und einzelnem Gerät erläubt
+- Treiber: Software, welche die Verbindung zwischen Anwenderprogramm und einzelnem Gerät erlaubt
 - Treiber sind also Teil des Betriebssystems
 - Treiber können:
     - Gerätezustände abfragen
     - Befehle an Gerät übermitteln
     - Daten vom / zum Gerät übermitteln
-
-

@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
       printf("Message from client: %s", message_from_client);
 
       // send message
-      char *msg = "Thx client received message!\n";
+      char *msg = "Thx client, received message!\n";
       send(newsockfd, msg, strlen(msg), 0);
 
       // clear buffer
