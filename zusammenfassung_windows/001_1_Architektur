@@ -1,0 +1,30 @@
+Architektur
+*****************************************************
+
+Windows (ab 2000)
+- Architektur: Schichtenmodell (modifizierte Micro-Kernel-Architektur)
+- User mode / kernel mode
+
+
+Kernel:
+- Implementiert in Ntoskrnl.exe
+- Kann nicht von anderem Prozess unterbrochen werden
+- Aufgaben:
+    - Behandlung von Traps, Ausnahmen und Interrupts
+    - Erstellen grundlegender Objekte (z.B. Prozess-Objekt)
+    - Scheduling und Dispatching
+    - Prozesssynchronisierung
+- Trap-Handling: Mechanismus einen aktiven Thread zu unterbrechen
+- Ausnahme: Fehler, der durch bestimmte Anweisung erzeugt wurde (z.B. Division by Null) -> synchron und replizierbar
+- Interrupt:
+    - Asynchrones Ereignis (z.B. Tastaturanschlag -> Hardware-Interrupt)
+    - 32 verschiedene Arten
+    - Priorisiert in IRQL (Interrupt Request Levels, 31 ist höchste, 0 ist niedrigste)
+    - Hardware: IRQL 3-31
+    - Kernel-Funktionen (Betriebssystem): IRQL 1 und 2
+    - Normale Threads: IRQL 0
+
+
+Abgrenzung Thread / Prozess:
+- Prozess: Umgebung und Adressraum für Thread (Win32 Prozess enthält immer mind. 1 Thread)
+- Thread: Codeausführende Einheit (Jeder Thread verfügt über eigenen Stack und Registersatz)

@@ -1,0 +1,134 @@
+Scheduling
+*****************************************************
+
+- Allgemein: Verteilen von (zu) knappen Ressourcen (z.B. CPU)
+- Welcher Prozess aus der Bereitliste soll als nächster dem Prozessor zugeordnet werden?
+- Unterschiedliche Situationen:
+    - Einprozessor / Mehrprozessor
+    - Homogene oder heterogene CPUs (z.B. punkto Geschwindigkeit)
+    - Prozessmenge statisch oder dynamisch (kommen während Ausführung neue Prozesse hinzu?)
+    - Online oder offline Scheduling? -> Scheduling zur Laufzeit oder im Vornherein (Scheduling aufgrund von unvollständigen Infos wenn dynamisch)?
+    - Ausführungszeiten der Prozesse bekannt?
+    - Preemption (Verdrängung) erlaubt?
+    - Abhängigkeiten zwischen Prozessen berücksichtigen
+    - Prioritäten zwischen den Prozessen?
+    - In Realtime-Systemen: Sollzeitpunkte berücksichtigen? (Planung des Prozessendes)
+    - Welches Ziel wird verfolgt?
+        - Benutzersicht: "User soll möglichst wenig warten müssen"
+        - Systemsicht: "Warteliste soll möglichst kurz sein", "Möglichst wenig Leerlaufzeit (Prozessorauslastung)", "Möglichst wenig Prozessoren"
+        -> Betriebsziele:
+            - Hohe Effizienz (gute Auslastung des Prozessors)
+            - Geringe Antwortzeit (bei interaktiven Prozessen)
+            - Hoher Durchsatz (bei batch-processing)
+            - Fairness
+
+
+Annahmen:
+- Homogenes Multiprozessorsystem
+- Prozessmenge dynamisch
+- Keine Abhängigkeiten zwischen Prozessen
+- Dynamisches online Scheduling
+- Keine Sollzeitpunkte
+
+Strategiealternativen:
+- Mit / Ohne Verdrängung
+- Mit / Ohne Prioritäten
+- Unabhängig / Abhängig von der Bedienzeit (Bedienzeit berücksigtigen oder nicht)
+
+
+Strategien:
+- FIFO (auch First Come First Served FCFS)
+- Least Come First Served LCFS:
+    - Neuankömmling in Bereitliste verdrängt rechnenden Prozess
+    - Verdrängter Prozess wird hinten in die warteschlange eingereiht
+    - Falls keine Ankünfte, Abarbeitung der Liste ohne Verdrängung
+    -> Bevorteilung von kurzen Prozessen (kurzer Prozess hat Chance, vor nächsten Ankunft fertig zu werden)
+    -> Langer Prozess wird wahrsch. mehrfach verdrängt werden
+- Round Robin (Zeitscheibenverfahren)
+- Prio-NP-Strategie (Priorities Nonpreemtive)
+    - Pozessorbesitz bis zur freiwilligen Aufgabe (oder Prozessende)
+    - Prozesse werden nach Prioritäten in die Warteliste eingeordnet (FIFO bei gleicher Priorität)
+- Prio-P-Strategie (Priorities Preemtive)
+    - Ähnlich wie Prio-NP, allerdings wird rechnender Prozess verdrängt, fall Neuankömmling höhere Priorität hat
+- Shortest Process Next:
+    - Kürzester Prozess wird ausgewählt, läuft bis zur freiwilligen Aufgabe (oder Prozessende)
+    - Komplette Laufzeit des Prozesses muss bekannt sein
+    -> Nachteil: Verhungern von langen Prozessen
+- Shortest Remaining Time Next:
+    - Auswahl: Prozess mit kürzester verbleibender Rechenzeit
+    - Rechnender Prozess kann verdrängt werden
+    - Restlaufzeit des Prozesses muss bekannt sein
+    -> Nachteil: Verhungern von langen Prozessen
+- Highest Response Ratio Next:
+    - Response Ratio rr: (Wartezeit + Bedienzeit)/Bedienzeit -> rr wird als Priorität verwendet (Prozess mit höchstem rr als Nächster)
+    - Nicht verdrängend
+    - Grosse Prozesse, die lange warten, werden mit der Zeit bevorzugt (kurze werden schon früher bevorzugt) -> kein Verhungern von Prozessesn
+    - Man muss Bedienzeit kennen (oder abschätzen können)
+- Multi Level Feedback MLF
+    - Man kennt Bedienzeit a priori nicht, möchte aber lang laufende Prozesse benachteiligen
+    - Prozess beginnt mit hoher Priorität. Diese wird während Ausführung schrittweise herabgesetzt
+    - Unterschiedliche Zeitscheibenlängen sind möglich (höhere Zeitscheiben für niedrigpriorisierte Prozesse)
+    - Round Robin in Prioritätswarteschlangen
+-> Siehe auch sein PDF und notes von Unix-Kurs
+
+
+Scheduling in Unix:
+- Interaktive Jobs werden bevorzugt
+- Prioritäten von 0 bis 127 (kleiner Wert = hohe Priorität)
+- Prio 0-59 für Kernmodus reserviert
+- Prio 60-127 für bereite Prozesse
+- Aufteilung in 32 Prioritätsklassen (run queues) -> d.h. 4 Prioritäten pro Klasse
+- Berechnung Priorität:
+    - Timer-Tick: Typischerweise alle 10ms
+    - Bei jedem Tick: Lcpu += 1
+    - Neuberechnung der Prozesspriorität P bei jedem 4. Tick
+        - P = Pbase + [Lcpu/4] + 2*Pnice
+        - Pbase: Basispriorität (Start normalerweise zwischen 50 und 60, also sehr hoch für Benutzerprozess)
+        - Pnice: "Nettigkeitsfaktor" des Prozesses (zwischen -20 und +19)
+        - Werte höher als 127 bleiben 127
+    -> Prozess wird also nach und nach (nach jedem 4. Tick) schlechter priorisiert (höhere Prioritätszahl)
+    -> I/O-intensive Prozesse werden bevorzugt, da sie CPU nur kurz belegen
+    - Problem: Mit der Zeit wird Lcpu so gross, dass Prozess kaum mehr dran kommt
+    - Lösung:
+        - Einmal pro Sekunde wird folgende Glättung Lcpu durchgeführt
+        - Lcpu = (2 * IRQ)/(2*IRQ + 1) * Lcpu + Pnice
+        - IRQ: Durchschnittslänge der entsprechenden Ready-Queue während der letzten Minute
+
+
+Scheduling in Windows:
+- Scheduling hier: Spielart von MLF (Prios, Zeitquantum, ...) -> Preemtive priority based scheduling, round robin bei gleicher priorität
+- Scheduling (Zeitplanung) und Dispatching (Unterbrechung) regeln, wie lange die einzelnen Threads Zugriff auf den Prozessor erhalten
+- 32 Prioritätsebenen (höhere Zahl = wichtigerer Prozess):
+    - 0: Leerlaufprozess
+    - 1-15: Variabler, dynamischer Bereich
+    - 15-31: Echtzeit-Bereich
+- Zwei Arten von Prioritäten:
+    - Basis-Priorität: Wird vom Erzeugerprozess geerbt
+    - Relative Priorität: Ergänzend zur Basis-Priorität
+- Prio kommt nur dran, wenn keine anderen Aufgaben anstehen, Prio 1-15 können vom OS angepasst werden, Echtzeit-Prozesse nicht
+- SetPriorityClass setzt Priorität eines Prozesses
+- SetThreadPriority setzt Priorität eines Threads innerhalb seines Prozesses
+- Quantum:
+    - Prozessorzeit, die einem Thread zugewiesen wird
+    - Zahlenwert ohne Zeiteinheit
+    - Bei jedem Zeitgeber Interrupt wird Wert um 3 verringert (typischerweise 10 Millisekunden)
+- Variable Prioritäten (1-15)
+    - Scheduler verwendet Strategien, um "wichtige" Threads zu bevorzugen (z.B. Quantum-Stretching oder Priority-Boost)
+    - Quantum-Stretching: Zeitquantum verlängern
+    - Priority-Boost: Priorität temporär hochschrauben (z.B. bei I/O-Ereignissen)
+    - ABER: Fortschrittsgarantie (alle 3-4 Sekunden werden "benachteiligte" Prozesse hochpriorisiert)
+    - Threadpriorität: Prozessesprioritätsklasse + Threadpriorität + Boost
+- Im Echtzeitbereich (16-31):
+    - Reines prioritätsgesteuertes Round Robin
+    - Keine Fortschrittsgarantie, keine dynamische Anhebung
+    -> Viele Realtime-Prozesse: Negativer Einfluss auf OS
+    - Threadpriorität: REALTIME_PRIORITY_CLASS + Threadpriorität
+- Direkter Aufruf des Schedulers:
+    - Ende eines Threads (ExitThread())
+    - Freiwilliges Warten (sleep(), WaitForXXX(), ...)
+- Indirekter Aufruf des Schedulers:
+    - Zeitquantum abgelaufen
+    - Thread höherer Priorität wird ablaufbereit (Verdrängung des aktuellen Threads)
+- Verdrängte Prozesse werden an Anfang der entsprechenden Warteliste gesetzt
+- Prozesse mit verbrauchtem Quantum werden ans Ende der entsprechenden Warteliste gesetzt
+- Falls keine wartenden Prozesse: Idle-Thread (enthält lediglich eine Schleife, die auf wartende Prozesse prüft)

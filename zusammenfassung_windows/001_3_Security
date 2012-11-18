@@ -1,0 +1,43 @@
+Windows Security
+**************************************************
+- Aufgabe: Daten vor nicht autorisiertem Zugriff schützen
+- Komponenten des Sicherheitsmodells:
+    - Sicherheits-Referenz-Monitor
+        - Kernel-Komponente in Ntoskrnl.exe
+        - Überwacht Objektzugriffe und Veränderungen
+    - Local Authority Subsystem (Lass)
+        - Überwacht lokale Sicherheitsrichtlinien (Anmeldungen, ...)
+        - Protokollierung sicherheitsrelevanter Ereignisse
+        - Lsass.exe und Lsass.dll
+    - Security Accounts Manager (SAM)
+        - Datenbank mit lokalen Benutzer- und Gruppenkonti
+    - Active Directory
+        - Verzeichnisdienst
+    - Authentication Package
+        - Überprüft die Korrektheit von Benutzernamen/Passwort in der SAM
+    - Winlogon (Anmeldung lokal)
+    - Netlogon (Anmeldungen am Active Directory)
+    - Kernel Security Device Driver (KsecDD)
+        - Bibliothek zum Austausch von Meldungen zwischen Kernel-Mode und User-Mode
+- Objektschutz
+    - Bietet dem Objekt-Manager Sicherheitsüberprüfungen
+        - Prozess erhält Sicherheits-ID des startenden Users
+        - Thread erhält Sicherheits-ID des Prozesses
+- Sicherheitssystem arbeitet mit 3 Infos:
+    - Sicherheits-ID des anfragenden Prozesses
+    - Gewünschter Zugriffsmode (lesen, schreiben, ...)
+    - Sicherheitseinstellungen des Objektes
+- Sicherheits-ID (SID):
+    - Überwiegend für Benutzer und Gruppen
+    - Setzt sich aus verschiedenen Komponenten zusammen:
+        - Domänenname in der Konto verwaltet wird
+        - Eindeutige Nummerierung innerhalb der Domäne (relative ID RID)
+    - Bsp.: S-1-5-21-1993962762-4867425537-544831762-1025
+    - RID beginnen bei 1000
+    - Beim Löschen von Konten werden die SIDs nicht wiederverwendet
+    - Vorgegebene SIDs:
+        - S110: Gruppe "Jeder"
+        - S120: Gerade angemeldeter Benutzer
+        - Domänen-SID 500: Administrator
+        - Domänen-SID 501: Gast
+
