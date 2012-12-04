@@ -1,0 +1,173 @@
+
+
+---------------------------------------------------
+- Neue Präsi:
+
+Active Directory (AD):
+- Verzeichnisdienst
+- Verwaltet Struktur und Konfiguration von Windows Netzwerken
+- Orientiert sich strukturell an LDAP und DNS
+- Abgebildet werden:
+    - Domänen (vergleiche DNS)
+    - Benutzer und Gruppen (wichtigstes)
+    - Richtlinien (häufig Sicherheitsrichtlinien)
+    - Weitere Konfigurationsparameter
+- Frühere Versionen: Domänenmodell MS-Lanmanager/Windows NT
+- Computer mit einer Instanz einer Verzeichnisdatenbank sind Domänen-Kontroller (DC)
+- Innerhalb einer AD Domäne lassen sich Organisationseinheiten (Organisation Units) erstellen
+- Organisation Unit OU:
+    - Hierarchisch angeordnet
+    - Enthalten Objekte (Benutzer, Gruppen, Computer, ...)
+    - Darauf basierende administrative Berechtigungen können verwaltet werden
+- AD ermöglicht auch Hierarchien oberhalb von Domänen
+    - Mehrere Domänen lassen sich in ein AD integrieren
+    - Domänen können gleichem Namensraum angehören (vergleiche DNS) -> Beispiel: hsz-t.ch, informatik.hsz-t.ch
+    - Domänen können unterschiedlichem Namensraum angehören -> Beispiel: hsz-t.ch, eth-zuerich.ch
+    - Gesamtstruktur: Forest
+- Gruppenrichtlinien werden an Domänen oder OUs (andere Objekte können keine Gruppenrichtlinien erhalten) gebunden -> Bewirken Konfigurationseinstellungen für darin befindliche Objekte (Benutzer, Gruppen, Computer)
+- Zur Nutzung des AD müssen Computer AD verstehen und sich damit verbinden können
+- Systeme, die AD nutzen: Windows Server (ab 2000), Windows XP und neuer
+- Teilweise unterstützt: MS-Dos, Windows 3.x, Windows 95/98/ME, Windows NT können freigegebene Ordner und Drucker nutzen
+- Teilweise auch für Linux (mit Samba)
+- LDAP Implementierung im AD untersützt dynamische Einträge
+- Zur schnellen Abfrage wichtiger Informationen stellt ein AD Domänenkontroller einen "global catalog" (GC)
+- Begriffe:
+    - Objekt:
+        - Repräsentiert logische oder physikalische Ressource
+        - Klassen beschreiben die im AD erstellbaren Objekte
+        - Hierarchieregeln mögliche übergeordnete Objekte an
+    - Attribute:
+        - Charakterisieren Eigenschaften eines Objektes
+        - Klassen definieren, welche Attribute einem Objekt zugeordnet sind
+        - ...?
+    - Wert:
+        - Jedes Attribut kann mit einem/mehreren Wert(en) versehen werden
+        - Format und Wertemenge werden im Schema beschrieben (Welches Attribut darf welchen Wert annehmen) -> Schema enthält gesamtstruktur
+    - ...?
+- Verschiedene Möglichkeiten zur Identifikation eines Objektes
+    - SID ...?
+    - ...?
+    - SIDs sind domänenspezifisch
+        - Wird Objekt in andere Domäne verschoben, ändert sich SID
+        - Um dabei Verweise auf das Objekt nicht zu verlieren (z.B. Erteilung von Berechtigungen) enthält jedes Objekt ein mehrwertiges Feld "SID-History"
+        - Bei jeder Authentifizierung wird die SID-History in das sogenannte Access-Token geladen
+        - Damit stehen alle Berechtigungen, die vor dem Verschieben erlangt wurden, ebenfalls zur Verfügung
+    - GUID
+        - AD weist allen Objekten bei der Erstellung einen Global Unique Identifier (GUID) zu
+        - GUID wird AD-intern zur Identifizierung herangezogen
+        - Im Gegensatz zu SID ändert sich GUID nie
+        - Aber: OS greift meist auf SID zurück (z.B. bei Rechtevergabe zu ...?)
+        - ...?
+    - Sicherheitsprincipal und Principal-Name
+        - Sicherheitsprincipal: Objekt, dem Berechtigungen für den Zugriff auf andere Objekte gewährt werden können (z.B. Benutzer, ...)
+        - Principal-Name: Domänenweit eindeutiger Name
+    - LDAP-bezogene Namen
+        - Für den Zuriff auf das AD werden LDAP-bezogene Namen verwendet
+            - Distinguished Name DN
+                - Absoluter Name
+                - Beispiel: cn=Schmitz,ou=Consulting,dc=Frankfurt,dc=corp,dc=tigg,dc=de
+            - Relative Distingquished Name RDN:
+                - Relativer Name (im Heimatcontainer)
+                - Beispiel: cn=Schmitz
+    - ...?
+    - Kanonische Namen
+        - Leichte Abwandlung der DN, die in AD-Tools häufig verwendet wird
+        - Besteht aus:
+            - Domäne im DNS Format, abgeschlossen mit /
+            ...?
+- Syntax für Anmeldenamen:
+    - Jedes Benutzerobjekt verfügt über zwei Anmeldenamen
+        - SAM Kontoname
+            - Kompatibilität zu Windows NT 4.0
+            - Flacher Namensraum
+            - Anmeldedomäne mus szusätzlich angegeben werden
+            - Beispiel: schmitz
+        - User Principal Name (UPN)
+            - AD-konforme Namenskonvention basierend auf RFC 822
+            - Anhand des UPN kann Anmeldedienst Domäne selbständig ermitteln
+            - Besteht aus Benutzername, @, UPN-Suffix (i.d.R. DNS-Name der Domäne)
+            - Beispiel: schmitz@fra.corp.tigg.de
+ - AD Schema
+    - Umfasst Vorgae für die möglichen im Verzeichnis erstellbaren Objekte und Attribute (mit entsprechenden Syntaxangaben)
+    - ...?
+- AD Architektur - Domäne und Domänenkontroller
+    - Domäne als zentrale Organisationsform
+    - Domäne nimmt Objekte (Benutzer, Computer, ...) auf
+    - Logische Zusammenfassung z.B. anhand administrativer Zuständigkeit oder Lokation
+    - Erstellung einer Domäne erfolgt durch Installation des ersten DC dieser Domäne
+    - Eine AD Domäne steht für einen eindeutigen Namensraum, der dem DNS-Namensraum entspricht (tigg.de)
+    - Jede AD Domäne wird über einen DNS-Namen eindeutig identifiziert
+    - AD-Domäne bildet administrativen und Sicherheitsbereich
+        - Administrative Berechtigungen und Sicherheitsrichtlinien ...?
+        - ...?
+    - Beim AD entspricht eine Domäne einer sog. Verzeichnispartition und damit gleichzeitig der kleinsten Replizierungseinheit
+    - Eine Domäne legt Informationen über Sicherheitsprincipals im AD ab
+    - ...?
+- Domaicontroller (DC):
+    - Serverrecher für den Betrieb einer AD Domäne
+    - Auf jedem DC befindet sich eine Kopie der AD Datenbank
+    - Änderungen an der Datenbank werden zu allen DC einer AD Domäne repliziert
+    - Pro AD Domäne: Mind. 1 DC
+    - DC kann genau einer AD Domäne angehören
+    - ...?
+- AD Architektur - Vertrauensstellungen (Trusts)
+    - Vertrauensstellungen sind Verbindungen zwischen Domänen, die das Vertrauen dieser zueinander beschreiben
+    - Anwendung:
+        - Vergabe von Berechtigunen für Benutzer der Domäne A auf Ressourcen der Domäne B
+    - Explizite Vertrauensstellung (Windows NT):
+        - Werden (explizit) von einem Administrator eingerichtet
+        - Werden nicht vererbt (A vertraut B, B vertraut C. Daraus folgt nicht, dass A C vertraut) -> sind nicht transitiv
+        - Sind immer unidirektional
+    - Vetrauensstellungen zwischen AD Domänen sind immer transitiv
+        - sind immer transitiv
+        - sind immer bidirektional
+        - Vertrauensstellungen zwischen den Domänen einer Gesamtstruktur werden immer automatisch erstellt
+            - Die Stammdomänen einer gesamtstruktur sind über transitive Vertrauensstellungen verbunden
+            - Untergeordnete Domänen werden beim Erstellen automatisch mit der jeweils Übergeordneten verbunden
+    - Vertrauensstellung hat zwei Beteiligte:
+        - Vertraute Domäne: Kontendomäne, Hauptdomäne
+        - Vertrauende Domäne: Ressourcendomäne
+    - Zusätzlich können zwichen zwei Domänen einer Gesamtstruktur Verknüpfungsvertrauensstellungen etabliert werden
+        - Diese würde einander über Hierarchie schon vertrauen
+        - Explizit
+        - So wird unter Umständen die Zeit für die Kerberos Authentifizierung verkürzt
+- AD Architektur - Organisationseinheiten (OUs)
+    - Zusätzliche Hierarchie innerhal einer Domäne
+    - Für OU kann ich Richtlinien erstellen
+    - ...?
+    - OUs sind keine Gruppen
+        - Gruppen sind Blattobjekte und können Bestandteil einer OU sein
+        - Im Gegensatz zu Gruppen sind OUs keine Sicherheitsprinzipals und haben somit keine SID
+        - Gruppen können Berechtigunen auf ein Objekt zugeteilt werden, Mitglieder der Gruppe erben dieses Recht
+        - Auf OUs und somit auf deren Mitglieder (z.B. Benutzer oder Computer) hingegen können Berechtigungen vergeben werden, z.B. zur Delegation von administrativen Rechten an nicht-Mitglieder einer Administrator-Gruppe
+    - ...?
+    - AD ermöglicht die Verwaltung mehrerer Domänen und Domänenhierarchien
+    - Ein zusammenhändender Namensraum entspricht einer Domänenstruktur
+    - ...?
+    - Erste Domäne einer Domänenstruktur: Stammdomäne
+        - "Oberste" Domäne einer Domänenstruktur
+        - ...?
+- AD Architektur - Gesamtstruktur (Forest)
+    - Oberste Strukturierugsebene im AD
+    - Kann mehrere Domänenstrukturen umfassen
+    - Ein fortlaufender Namensraum ist nicht erforderlich
+    - Gesamtstruktur definiert AD Schema und AD Konfiguration, d.h. jeder AD DC innerhalb der Gesamtstruktur hat das gleiche Schema
+    - ...?
+    - Stammdomäne der Gesamtstruktur (Forest Root Domain)
+        - Gesamtstruktur besitzt ausgezeichnete Stammdomäne -> Forest Root Domain
+        - ...?
+- Vertrauensstellungen zwischen Gesamtstrukturen (Forest Trusts)
+    - Müsse mehrere Gesamtstrukturen geildet werden, können diese über Vertrauensstellungen verbunden werden
+    - Dabei ist zu beachten:
+        - Gemeinsamkeiten der Schemata müssen manuell nachgeführt werden
+        - Die üblichen AD Suchfunktionen beziehen sich meist auf nur eine Gesamtstruktur
+    - Wird angewandt wenn:
+        - Mehrere unterschiedliche Schemata notwendig sind
+        - Externe Unternehmen (Partner)
+        - Wenn viele Vertrauensstellungen einzelner Domänen zweier Gesamtstrukturen notwendig sind, können diese durch einen Forest Trust ersetzt werden
+        - ...?
+
+
+
+
+
