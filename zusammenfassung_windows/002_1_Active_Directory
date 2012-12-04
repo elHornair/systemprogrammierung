@@ -1,5 +1,66 @@
-Active Directory
+Active Directory (AD)
 **************************************************
 
+Was ist Active Direktory?
+- Verzeichnisdienst von Windows
+- Verwaltet Struktur und Konfiguration von Windows Netzwerken
+- Orientiert sich strukturell an LDAP und DNS
+- Abgebildet werden:
+    - Domänen (vergleiche DNS)
+    - Benutzer und Gruppen (wichtigstes)
+    - Richtlinien (häufig Sicherheitsrichtlinien)
+    - Weitere Konfigurationsparameter
+- Frühere Versionen: Domänenmodell MS-Lanmanager/Windows NT
+- Domänen-Kontroller (DC): Computer mit einer Instanz einer Verzeichnisdatenbank
+- Innerhalb einer AD Domäne lassen sich Organisationseinheiten (Organisation Units) erstellen
+- Organisation Unit OU:
+    - Hierarchisch angeordnet
+    - Enthalten Objekte (Benutzer, Gruppen, Computer, ...)
+    - Darauf basierende administrative Berechtigungen können verwaltet werden
+- AD ermöglicht auch Hierarchien oberhalb von Domänen
+    - Mehrere Domänen lassen sich in ein AD integrieren
+    - Domänen können gleichem Namensraum angehören (vergleiche DNS) -> Beispiel: hsz-t.ch, informatik.hsz-t.ch
+    - Domänen können unterschiedlichem Namensraum angehören -> Beispiel: hsz-t.ch, eth-zuerich.ch
+    - Gesamtstruktur: Forest
+- Gruppenrichtlinien...
+    - ... werden an Domänen oder OUs gebunden
+    - ... bewirken Konfigurationseinstellungen für darin befindliche Objekte (Benutzer, Gruppen, Computer)
+    - Andere Objekte können keine Gruppenrichtlinien erhalten
 
+
+AD Clients:
+- Zur Nutzung des AD müssen Computer AD verstehen und sich damit verbinden können
+- Systeme, die AD nutzen: Windows Server (ab 2000), Windows XP und neuer
+- Teilweise unterstützt: MS-Dos, Windows 3.x, Windows 95/98/ME, Windows NT können freigegebene Ordner und Drucker nutzen
+- Teilweise auch für MacOSX und Linux (mit Samba)
+
+
+Zugriff auf das AD:
+- Prinzipiell über TCP/IP
+- Namensauflösung über DNS
+- LDAP Protokoll zum Zugriff auf das Verzeichnis
+- LDAP Implementierung im AD (AD-LDAP) unterstützt dynamische Einträge
+- Zur schnellen Abfrage wichtiger Informationen erstellt ein AD Domänenkontroller einen "global catalog" (GC)
+
+
+Begriffe:
+- Objekt:
+    - Repräsentiert logische oder physikalische Ressource
+    - Klassen beschreiben die im AD erstellbaren Objekte
+    - Hierarchieregeln geben mögliche übergeordnete Objekte an
+- Attribute:
+    - Charakterisieren Eigenschaften eines Objektes
+    - Klassen definieren, welche Attribute einem Objekt zugeordnet sind
+    - Einmal im AD definierte Attribute können in verschiedenen Klassen verwendet werden
+    - Können einen oder mehrere Werte annehmen
+    - Können verbindlich (mandatory) sowie optional sein
+- Wert:
+    - Jedes Attribut kann mit einem/mehreren Wert(en) versehen werden
+    - Format und Wertemenge werden im Schema beschrieben (Welches Attribut darf welchen Wert annehmen?)
+- Objekte, Attribute und Werte dienen dazu, Informationen in der Verzeichnisdatenbank des AD zu organisieren
+- Schema enthält Gesamtstruktur des AD
+
+
+Identifikation von Objekten / Objektnamen:
+- Verschiedene Möglichkeiten zur Identifikation
 
