@@ -1,32 +1,37 @@
 Windows Security
 **************************************************
 - Aufgabe: Daten vor nicht autorisiertem Zugriff schützen
-- Komponenten des Sicherheitsmodells:
-    - Sicherheits-Referenz-Monitor
-        - Kernel-Komponente in Ntoskrnl.exe
-        - Überwacht Objektzugriffe und Veränderungen
-    - Local Authority Subsystem (Lass)
-        - Überwacht lokale Sicherheitsrichtlinien (Anmeldungen, ...)
-        - Protokollierung sicherheitsrelevanter Ereignisse
-        - Lsass.exe und Lsass.dll
-    - Security Accounts Manager (SAM)
-        - Datenbank mit lokalen Benutzer- und Gruppenkonti
-    - Active Directory
-        - Verzeichnisdienst
-    - Authentication Package
-        - Überprüft die Korrektheit von Benutzernamen/Passwort in der SAM
-    - Winlogon (Anmeldung lokal)
-    - Netlogon (Anmeldungen am Active Directory)
-    - Kernel Security Device Driver (KsecDD)
-        - Bibliothek zum Austausch von Meldungen zwischen Kernel-Mode und User-Mode
-- Objektschutz
-    - Bietet dem Objekt-Manager Sicherheitsüberprüfungen
-        - Prozess erhält Sicherheits-ID des startenden Users
-        - Thread erhält Sicherheits-ID des Prozesses
-- Sicherheitssystem arbeitet mit 3 Infos:
-    - Sicherheits-ID des anfragenden Prozesses
-    - Gewünschter Zugriffsmode (lesen, schreiben, ...)
-    - Sicherheitseinstellungen des Objektes
+
+Komponenten des Sicherheitsmodells:
+- Sicherheits-Referenz-Monitor
+    - Kernel-Komponente in Ntoskrnl.exe
+    - Überwacht Objektzugriffe und Veränderungen
+- Local Authority Subsystem (Lass)
+    - Überwacht lokale Sicherheitsrichtlinien (Anmeldungen, ...)
+    - Protokollierung sicherheitsrelevanter Ereignisse
+    - Lsass.exe und Lsass.dll
+- Security Accounts Manager (SAM)
+    - Datenbank mit lokalen Benutzer- und Gruppenkonti
+- Active Directory
+    - Verzeichnisdienst
+- Authentication Package
+    - Überprüft die Korrektheit von Benutzernamen/Passwort in der SAM
+- Winlogon (Anmeldung lokal)
+- Netlogon (Anmeldungen am Active Directory)
+- Kernel Security Device Driver (KsecDD)
+    - Bibliothek zum Austausch von Meldungen zwischen Kernel-Mode und User-Mode
+
+Objektschutz:
+- Bietet dem Objekt-Manager Sicherheitsüberprüfungen
+    - Prozess erhält Sicherheits-ID des startenden Users
+    - Thread erhält Sicherheits-ID des Prozesses
+
+Sicherheitssystem arbeitet mit 3 Infos:
+- Sicherheits-ID des anfragenden Prozesses
+- Gewünschter Zugriffsmode (lesen, schreiben, ...)
+- Sicherheitseinstellungen des Objektes
+
+Sicherheitsbeschreibungen:
 - Sicherheits-ID (SID):
     - Überwiegend für Benutzer und Gruppen
     - Setzt sich aus verschiedenen Komponenten zusammen:
@@ -40,4 +45,29 @@ Windows Security
         - S120: Gerade angemeldeter Benutzer
         - Domänen-SID 500: Administrator
         - Domänen-SID 501: Gast
-
+- Zugriffstoken:
+    - Bei Anmeldung generiertes Token, das anmeldenden Benuzer zugeordnet ist
+    - Verwendet von Sicherheits-Referenz-Monitor
+    - Besteht aus SID und den Informationen über Zugriffsberechtigungen
+- Access Control List (ACL)
+    - Zugriffslisten für Objekt (wer darf was?)
+    - Basis für Autorisierung durch Sicherheits-Referenz-Monitor
+    - Objekt hier z.B. Teile des Dateisystems oder Bereiche der Registry
+    - Aufbau:
+        - Revisionsnummer (für Kompatibilität mit versch. Versionen des Sicherheits-Referenz-Monitor)
+        - Flags
+        - SID des Besitzers
+        - SID der primären Gruppe
+        - DACL: Discretionary ACL - Regelung des Zugriffs über ACEs (Access Control Entries)
+        - SACL: System ACL - Überwachungsrichtlinien, die regeln, welche Ereignisse protokolliert werden
+        - Access Control Entry (ACE):
+            - Einträge der DACL
+            - Werte-Tripel (SID, Zugriffsmaske (bestehend aus Zugriffsrechten) und Zugriffsmode (Rechte in Zugriffsmaske zugelassen oder verweigert))
+            - Beispiele von Regeln: Lesen (R), Schreiben (W), Ändern (C), Vollzugriff (F)
+        - Bestimmung von Zugriffsrechten:
+            - Schrittweiser Vergleich der SID des Zugriffstokens mit der ACL
+            - Regeln:
+                - Besitzer hat Berechtigung, DACL zu bearbeiten
+                - Verweigert: Höchste Priorität, kann nicht durch "Gewährt" überschrieben werden. Bsp:
+                    - User A darf schreiben, User A ist in Gruppe B, Gruppe B hat Verbot zu schreiben -> User A darf nicht schreiben
+                    - User A hat Verbot zu schreiben, User A ist in Gruppe B, Gruppe B darf schreiben -> User A darf nicht schreiben

@@ -1,0 +1,61 @@
+Startvorgang
+**************************************************
+
+Startdateien (in Ausführreihenfolge):
+- NTLDR (aktive Partition):
+    - Auswahl des Betriebssystems, Laden weiterer Systemdateien
+    - Lädt: Ntoskrnl.exe, Boovid.dll, Hal.dll und einige Gerätetreiber
+    - Bootmanager
+- Boot.ini (aktive Partition):
+    - Konfigurationsdatei von NTLDR
+- Bootsec.dos (aktive Partition):
+    - Wird gestartet, wenn W2K ausgewählt wurde
+- Ntbootdd.sys (aktive Partition):
+    - SCSI Gerätetreiber für spezielle SCSI-Kontroller
+- Ntdetect.com (aktive Partition):
+    - Automatische Hardwareerkennung
+- Ntoskrnl.exe (%SystemRoot%\System32):
+    - Kernel des Betriebsystems
+    - Wird von NTLDR komplett in Arbeitsspeicher geladen
+    - Lädt weitere Gerätetreiber, die Subsysteme und führt SSMS.exe aus
+    - Konfiguration teilweise von Ntdetect und aus der Registry
+- Hal.dll (%SystemRoot%\System32):
+    - Hardware Abstraction Layer
+- System Key (%SystemRoot%\System32\Config):
+    - Konfiguration landesspezifischer Tastaturtreiber
+- Gerätetreiber (%SystemRoot%\System32\Drivers):
+    - Treiber, die nicht in Betriebssystem eingebunden werden
+- SSMS.exe (%SystemRoot%\System32):
+    - Sitzungsmanager
+    - Lädt Win32-Subsystem
+    - Startet Winlogon Prozess
+- Winlogon.exe (%SystemRoot%\System32):
+    - Startet Service Control Manager, lokale Sicherheitsautorität und ruft Logon Dienst auf
+- Services.exe (%SystemRoot%\System32):
+    - Service Control Manager
+    - Startet alle Treiber, die auf Autostart gesetzt sind
+    - Lädt alle Dienste
+-> Details: Siehe Präsi "001_OS-XX-Architektur" ab S.28
+
+
+Explizites Laden von Treibern über die Registry:
+- Einträge in der Registry unter HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services
+- Repräsentieren jeweils einen Eintrag für alle installierten Treiber und jeden Dienst
+- Startwert gibt an, zu welchem Zeitpunkt im Boot-Prozess der Treiber geladen wird
+    - 0: Durch NTLDR beim Systemstart (z.B. Treiber für bootbare Hardware)
+    - 1: Durch E/A-Manager, sobald alle Kernel-Mode-Komponenten geladen sind
+    - 2: Werden vom Service Control Manager automatisch gestartet
+    - 3: Werden vom Service Control Manager auf Anfrage von anderen Komponenten gestartet
+    - 4: Deaktiviert - werden nicht gestartet
+- Nur Gerätetreiber können einen Wert von 0 oder 1 haben, Dienste müssen im Bereich 2 bis 4 liegen
+- Errorlevels bei Start des Treibers/Dienstes:
+    - 0: Fehler wird ignoriert
+    - 1: Warnung und Eintrag im Systemprotokoll
+    - 2: Letzte gültige Konfiguration wird gebootet. Falls dies bei Fehlereintritt schon der Fall ist: Bootvorgang fortsetzen
+    - 3: Letzte gültige Konfiguration wird gebootet. Falls dies bei Fehlereintritt schon der Fall ist: Bootvorgang abbrechen -> Bluescreen
+- Weitere Einträge:
+    - Type: 1,2 oder 8 sind Gerätetreiber, 16, 32 oder 256 sind Dienste
+    - Group: Treiber oder Dienst gehört zu dieser Gruppe
+    - Tag: Ganze Zahl, die die Ladereihenfolge in der Gruppe angibt
+    - ImagePath: Pfad zum Treiber/Dienst. Falls leer, suchen E/A-Manager und Service-Control-Magager in %Systemroot%\System32\Drivers
+- Vorhandene Gruppen: HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\ServiceGroupOrder\List

@@ -37,6 +37,7 @@ Strategiealternativen:
 
 
 Strategien:
+- Achtung: Höhere Zahlen sind höhere Prioritäten
 - FIFO (auch First Come First Served FCFS)
 - Least Come First Served LCFS:
     - Neuankömmling in Bereitliste verdrängt rechnenden Prozess
@@ -49,7 +50,7 @@ Strategien:
     - Pozessorbesitz bis zur freiwilligen Aufgabe (oder Prozessende)
     - Prozesse werden nach Prioritäten in die Warteliste eingeordnet (FIFO bei gleicher Priorität)
 - Prio-P-Strategie (Priorities Preemtive)
-    - Ähnlich wie Prio-NP, allerdings wird rechnender Prozess verdrängt, fall Neuankömmling höhere Priorität hat
+    - Ähnlich wie Prio-NP, allerdings wird rechnender Prozess verdrängt, falls Neuankömmling höhere Priorität hat
 - Shortest Process Next:
     - Kürzester Prozess wird ausgewählt, läuft bis zur freiwilligen Aufgabe (oder Prozessende)
     - Komplette Laufzeit des Prozesses muss bekannt sein
