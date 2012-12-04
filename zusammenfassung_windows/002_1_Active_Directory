@@ -63,4 +63,108 @@ Begriffe:
 
 Identifikation von Objekten / Objektnamen:
 - Verschiedene Möglichkeiten zur Identifikation
+- SID, SID-History und GUID
+    - SID wird vom OS jedem Benutzer, jeder Sicherheitsgruppe und jedem Computer bei der Erstellung zugeordnet
+    - SID ist systemweit eindeutig
+    - Bei Umbenennung eines Objektes ändert sich SID nicht
+    - Löschung eines Objektes wird auch SID gelöscht
+    - SIDs sind domänenspezifisch
+        - Wird Objekt in andere Domäne verschoben, ändert sich SID
+        - Um dabei Verweise auf das Objekt nicht zu verlieren (z.B. Erteilung von Berechtigungen) enthält jedes Objekt mehrwertiges Feld "SID-History"
+        - Bei jeder Authentifizierung wird SID-History in Access-Token geladen
+        - Damit stehen weiterhin alle Berechtigungen (auch die, die vor dem Verschieben erteilt wurden) zur Verfügung
+    - GUID
+        - AD weist allen Objekten bei der Erstellung einen Global Unique Identifier (GUID) zu
+        - GUID wird AD-intern zur Identifizierung herangezogen
+        - Im Gegensatz zu SID ändert sich GUID nie
+        - Aber: OS greift meist auf SID zurück (z.B. bei Rechtevergabe zum Zugriff bei NTFS und der Registry)
+        - SID existiert seit Windows NT
+- Sicherheitsprincipal und Principal-Name
+    - Sicherheitsprincipal: Objekt, dem Berechtigungen für den Zugriff auf andere Objekte gewährt werden können (z.B. Benutzer, Gruppen, ...)
+    - Principal-Name: Domänenweit eindeutiger Name
+- LDAP-bezogene Namen
+    - Für den Zuriff auf das AD werden LDAP-bezogene Namen (DN oder RDN) verwendet
+    - Distinguished Name DN
+        - Absoluter Name
+        - Beispiel: cn=Schmitz,ou=Consulting,dc=Frankfurt,dc=corp,dc=tigg,dc=de
+        - Jedes Objekt im AD erhält einen DN
+    - Relative Distinguished Name RDN:
+        - Relativer Name (im Heimatcontainer)
+        - Beispiel: cn=Schmitz
+        - Jeder RDN wird im AD gespeichert und enthält Verweis auf übergeordnetes Objekt
+        - Zur Bildung eines RDN werden Attributtypen wie "cn" (common name), "ou" (organisational unit), "dc", "c" (country), ... verwendet
+    - LDAP-URL:
+        - Präfix + DNS Name (oder IP) + DN
+        - Beispiel: ldap://srva.fra.corp.tigg.de/cn=Schmitz,ou=Consulting,dc=Frankfurt,dc=corp,dc=tigg,dc=de
+- Kanonische Namen
+    - Leichte Abwandlung der DN, die in AD-Tools häufig verwendet wird
+    - Domäne im DNS Format + RDNs, beginnend beim Stamm
+    - Beispiel: frankfurt.corp.tigg/consulting/schmitz
+- Syntax für Anmeldenamen:
+    - Benutzer und Computer sind Sicherheitsprincipals, die eine Authentifizierung und Autorisierung durchlaufen müssen, um auf Objekte zuzugreifen
+    - Benutzer müssen durch eine Anmeldung an einer Domäne authentifiziert werden
+    - Jedes Benutzerobjekt verfügt über zwei Anmeldenamen
+        - SAM Kontoname
+            - Kompatibilität zu Windows NT 4.0
+            - Flacher Namensraum
+            - Anmeldedomäne muss zusätzlich angegeben werden
+            - Beispiel: schmitz
+        - User Principal Name (UPN)
+            - AD-konforme Namenskonvention basierend auf RFC 822
+            - Anhand des UPN kann Anmeldedienst Domäne selbständig ermitteln
+            - Benutzername + @ + UPN-Suffix (i.d.R. DNS-Name der Domäne)
+            - Beispiel: schmitz@fra.corp.tigg.de
+
+
+AD Schema:
+    - Umfasst Vorgaben für die möglichen im Verzeichnis erstellbaren Objekte und Attribute (mit entsprechenden Syntaxangaben)
+    - Definiert Regeln über Struktur und Inhalte
+    - Wird im AD selbst in Schema-Objekten gespeichert
+    - Schema ist nicht nur verbindlich für EINE Domäne sondern bildet Gesamtstruktur, der mehrere AD Domänen angehören können
+    - Schemaerweiterung wirken sich somit auf alle DCs einer Gesamtstruktur aus (Beispiel MS Exchange Server)
+
+
+AD Architektur - Domäne und Domänenkontroller (DC):
+- Domäne als zentrale Organisationsform
+- Domäne nimmt Objekte (Benutzer, Computer, ...) auf
+- Logische Zusammenfassung z.B. anhand administrativer Zuständigkeit oder Location
+- Erstellung einer Domäne erfolgt durch Installation des ersten DC dieser Domäne
+- Eine AD Domäne steht für eindeutigen Namensraum, der dem DNS-Namen entspricht (z.B. tigg.de), d.h. Domäne wird über DNS-Namen eindeutig identifiziert
+- AD-Domäne bildet administrativen und Sicherheitsbereich
+    - Administrative Berechtigungen und Sicherheitsrichtlinien innerhalb einer Domäne wirken sich nicht auf andere Domänen aus
+    - Einschränkung der Trennung: Einige Informationen stehen Gesamtstruktur zur Verfügung und sind somit domänenübergreifend
+- Beim AD entspricht eine Domäne einer sog. Verzeichnispartition und damit gleichzeitig der kleinsten Replizierungseinheit
+- Eine Domäne legt Informationen über Sicherheitsprincipals im AD ab
+- Domaicontroller (DC):
+    - Serverrecher für den Betrieb einer AD Domäne
+    - Auf jedem DC befindet sich eine Kopie der AD Datenbank
+    - Änderungen an der Datenbank werden zu allen DC einer AD Domäne repliziert
+    - Pro AD Domäne: Mind. 1 DC
+    - DC kann genau einer AD Domäne angehören
+    - Singlemaster Replikation (Windows NT): Primäre DC (PDC) repliziert an Backup DCs (BDCs)
+    - Multimaster Replikation (AD): Änderungen am Verzeichnis eines beliebigen DCs werden an die anderen DC repliziert
+
+
+AD Architektur - Vertrauensstellungen (Trusts):
+- Vertrauensstellungen sind Verbindungen zwischen Domänen, die das Vertrauen dieser zueinander beschreiben
+- Anwendung: Vergabe von Berechtigunen für Benutzer der Domäne A auf Ressourcen der Domäne B
+- Explizite Vertrauensstellung (Windows NT):
+    - Werden (explizit) von einem Administrator eingerichtet
+    - Werden nicht vererbt (A vertraut B, B vertraut C. Daraus folgt nicht, dass A C vertraut) -> sind nicht transitiv
+    - Sind immer unidirektional
+- Vetrauensstellungen zwischen AD Domänen:
+    - Sind immer transitiv
+    - Beispiel: Domäne C vertraut Domäne B und B vertraut Domäne A, so vertraut auch Domäne C der Domäne A
+    - Verwendung von Kerberos zur Authentifizierung
+    - Sind immer bidirektional
+    - Vertrauensstellungen zwischen den Domänen einer Gesamtstruktur werden immer automatisch erstellt
+        - Die Stammdomänen einer Gesamtstruktur sind über transitive Vertrauensstellungen verbunden
+        - Untergeordnete Domänen werden beim Erstellen automatisch mit der jeweils Übergeordneten verbunden
+- Vertrauensstellung hat zwei Beteiligte:
+    - Vertraute Domäne: Kontendomäne, Hauptdomäne
+    - Vertrauende Domäne: Ressourcendomäne
+- Zusätzlich können zwischen zwei Domänen einer Gesamtstruktur Verknüpfungsvertrauensstellungen etabliert werden:
+    - Diese zwei Domänen würde einander über Hierarchie schon vertrauen
+    - Verknüpfungsvertrauensstellungen ist expliziter
+    - So wird u.U. Zeit für Kerberos-Authentifizierung verkürzt (weil nicht ganzer Vertrauensbaum abgeklappert werden muss)
 
