@@ -168,3 +168,51 @@ AD Architektur - Vertrauensstellungen (Trusts):
     - Verknüpfungsvertrauensstellungen ist expliziter
     - So wird u.U. Zeit für Kerberos-Authentifizierung verkürzt (weil nicht ganzer Vertrauensbaum abgeklappert werden muss)
 
+
+AD Architektur - Organisationseinheiten (OUs)
+- OU: Zusätzliche Hierarchie innerhalb einer Domäne
+- OU kann weitere OUs oder Objekte enthalten (-> OUs sind Container)
+- Für OU können Gruppenrichtlinien erstellt werden
+- OUs sind keine Gruppen
+    - Gruppen sind Blattobjekte und können Bestandteil einer OU sein
+    - Im Gegensatz zu Gruppen sind OUs keine Sicherheitsprinzipals und haben somit keine SID
+    - Gruppen können Berechtigungen auf ein Objekt zugeteilt werden, Mitglieder der Gruppe erben dieses Recht
+    - Auf OUs und somit auf deren Mitglieder (z.B. Benutzer oder Computer) hingegen können Berechtigungen vergeben werden, z.B. zur Delegation von administrativen Rechten an Nicht-Mitglieder einer Administrator-Gruppe
+- OU-Struktur != Organisationsstruktur des Unternehmens
+- OUs sind kleinstes Strukturierungselement, dem administrative Berechtigungen erteilt werden können
+
+
+AD Architektur – Domänenstruktur (Tree)
+- AD ermöglicht Verwaltung mehrerer Domänen und Domänenhierarchien
+- Zusammenhängender Namensraum: EINE Domänenstruktur (ein Tree)
+- Domänenstrukturen können untergeordnete Domänen haben (vgl. DNS)
+- Domänen besitzen eigene administrative Bereiche (Benutzer der Gruppe Domänenadministratoren)
+- Administrationsberechtigungen vererben sich nicht automatisch, sondern müssen explizit erteilt werden (von unten nach oben)
+- Stammdomäne:
+    - Erste Domäne einer Domänenstruktur
+    - Alle anderen Domänen der Domänenstruktur betrachten diese als übergeordnete Domäne
+    - Domänen mit gleicher Stammdomäne bilden zusammenhängenden Namensraum
+    - Zwei untergeordnete Domänen müssen eindeutig sein, wenn sie gleiche übergeordnete Domäne haben
+
+
+AD Architektur - Gesamtstruktur (Forest)
+- Oberste Strukturierugsebene im AD
+- Kann mehrere Domänenstrukturen umfassen
+- Kein fortlaufender Namensraum erforderlich
+- Gesamtstruktur definiert AD Schema und AD Konfiguration, d.h. jeder AD DC innerhalb der Gesamtstruktur hat das gleiche Schema
+- Gesamtstruktur mit nur einer Domänenstruktur, die wiederum nur eine Domäne umfasst: Single-Domain Forest
+- Stammdomäne der Gesamtstruktur (Forest Root Domain):
+    - Erste in Gesamtstruktur erstellte Domäne -> Forest Root Domain
+    - Die beiden Gruppen Organisations-Admins und Schema-Admins werden dieser Gruppe zugeordnet
+    - Alle Stammdomänen innerhalb Gesamtstruktur weisen transitive Vertrauensstellung zu Stammdomäne der Gesamtstruktur auf
+    - Stammdomäne kann nicht gelöscht oder verschoben werden
+- Vertrauensstellungen zwischen Gesamtstrukturen (ForestTrusts):
+    - Müssen mehrere Gesamtstrukturen gebildet werden, können diese über Vertrauensstellungen verbunden werden
+    - Zu beachten:
+        - Gemeinsamkeiten der Schemata müssen manuell nachgeführt werden
+        - Die üblichen AD Suchfunktionen beziehen sich meist auf nur eine Gesamtstruktur
+    - Wird angewandt wenn:
+        - Mehrere unterschiedliche Schemata notwendig
+        - Externe Unternehmen (Partner)
+        - Wenn viele Vertrauensstellungen einzelner Domänen zweier Gesamtstrukturen notwendig sind, können diese durch einen Forest Trust ersetzt werden
+        - Forest Trust: Alle Domänen einer Gesamtstruktur vertrauen allen Domänen der anderen Gesamtstruktur
