@@ -1,0 +1,40 @@
+Active Directory (AD) - Replikation
+**************************************************
+
+Grundsätzlich:
+- AD Replikation reflektiert alle Änderungen die an einem Objekt vorgenommen werden
+- Ziel: Performancesteigerung (Verteilung der Lesevorgänge auf AD), Ausfallsicherheit (da immer mehrere Kopien des AD vorliegen)
+- Massnahmen, um Performanceeinbrüche durch Replikation zu vermeiden:
+    - Unterteilung der AD Datenbank in Partitionen
+    - Es werden nie alle Partitionen gleichzeitig repliziert
+    - Nur veränderte Informationen werden repliziert
+
+
+AD Replikation – Verzeichnispartitionen:
+- Jedes AD umfasst mindestens folgende Verzeichnispartitionen:
+    - Schema (Gesamtstrukturweite Replikation)
+    - Configuration (Gesamtstrukturweite Replikation):
+        - Infos über AD Gesamtstruktur
+        - Z.B. Welche Domänen, Standorte, DC existieren; Topologie der Standorte
+    - Domain (Domänenweite Replikation):
+        - Beschreibt alle Objekte der Domäne und ihre Attribute
+        - Vollständige Domänenpartition:
+            - Enthält Replika aller Informationen
+            - Auf jedem DC einer Domäne ist vollständige Replikation hinterlegt
+        - Partitielle Domänenpartition:
+            - Enthält lediglich Untermenge als Nur-Lese-Replikation
+            - Jeder DC mit Global Catalog enthält solche Nur-Lese-Replikation
+        - Anwendungsverzeichnispartitionen
+            - Können mehrfach vorkommen
+            - Enthalten anwendungsabhängige Informationen
+            - Können alle Objekte der im Schema definierten Klassen enthalten (Ausnahme: Sicherheitsprincipals)
+            - Ihre Objekte werden nicht in Global Catalog übernommen
+
+
+AD Replikation – Überwachung von Änderungen:
+    - Update Sequence Numbers (USN):
+        - Werden von jedem DC geführt
+        - Werden bei jeder Änderung am Replikat erhöht
+        - Jeder DC führt eine Liste mit letzten (höchsten) USNs seiner Replitationspartner
+
+Stand: S.41

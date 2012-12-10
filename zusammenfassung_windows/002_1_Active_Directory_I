@@ -1,4 +1,4 @@
-Active Directory (AD)
+Active Directory (AD) - Grundlagen
 **************************************************
 
 Was ist Active Direktory?
@@ -124,6 +124,9 @@ AD Schema:
     - Schemaerweiterung wirken sich somit auf alle DCs einer Gesamtstruktur aus (Beispiel MS Exchange Server)
 
 
+Active Directory (AD) - Architektur
+**************************************************
+
 AD Architektur - Domäne und Domänenkontroller (DC):
 - Domäne als zentrale Organisationsform
 - Domäne nimmt Objekte (Benutzer, Computer, ...) auf
@@ -216,3 +219,29 @@ AD Architektur - Gesamtstruktur (Forest)
         - Externe Unternehmen (Partner)
         - Wenn viele Vertrauensstellungen einzelner Domänen zweier Gesamtstrukturen notwendig sind, können diese durch einen Forest Trust ersetzt werden
         - Forest Trust: Alle Domänen einer Gesamtstruktur vertrauen allen Domänen der anderen Gesamtstruktur
+
+
+AD Architektur – Global Catalog (GC):
+- Aus dem AD abgeleitete Datenbank, die Durchsuchen erleichtern soll
+- Enthält alle Objekte der eigenen Domäne sowie bestimmte Objekte aus anderen Domänen der Gesamtstruktur
+- Enthält nicht alle Attribute der Objekte
+- Konfiguration wird im Schema der Gesamtstruktur festgelegt
+- Erster DC einer Gesamtstruktur erhält Global Catalog (kann verschoben werden)
+- Es können weitere GCs definiert werden (Lastverteilung, Replikation)
+- Suchvorgänge werden beschleunigt, da nicht ganzes AD durchsucht werden muss (z.B. bei Benutzeranmeldung, oder bei Ermittlung von Gruppenmitgliedschaft)
+
+
+AD Architektur – Standorte (Sites):
+- Domänen, Domänenstrukturen, Gesamtstrukturen: Logische Einheiten
+- Standorte: Bilden physische Strukturen eines Netzwerkes ab
+- Standort umfasst alle Computer, die IP-(Sub)Netzwerk angehören und direkt (Schnell und zuverlässig) miteinander verbunden sind
+- Mehrere Standorte lassen sich über Standortverbindungen (Site Links) miteinander verbinden
+- Wann Standortverbindungen aufgebaut werden: Konfigurierbar
+- Standort kann mehrere Domänen umfassen, Domäne kann sich über mehrere Standorte erstrecken
+- Aspekte von Standorten:
+    - Schneller Zugriff auf Dienste (z.B. Domain Controller)
+    - Replikation (Gezielte Replikation über Standorte hinweg, standortintern häufigere Replikation)
+    - Erzeugung:
+        - Automatisch bei Installation des ersten DC in Gesamtstruktur
+        - Verwaltung über MMC Snap-in
+        - Werden weitere Server installiert, werden Sie entsprechend Standortkonfiguration (IP Netz -> Standort) automatisch zugeordnet
