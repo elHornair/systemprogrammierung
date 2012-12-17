@@ -32,9 +32,41 @@ AD Replikation – Verzeichnispartitionen:
 
 
 AD Replikation – Überwachung von Änderungen:
-    - Update Sequence Numbers (USN):
-        - Werden von jedem DC geführt
-        - Werden bei jeder Änderung am Replikat erhöht
-        - Jeder DC führt eine Liste mit letzten (höchsten) USNs seiner Replitationspartner
+- Update Sequence Numbers (USN):
+    - Werden von jedem DC geführt
+    - Werden bei jeder Änderung am Replikat erhöht
+    - Jeder DC führt eine Liste mit letzten (höchsten) USNs seiner Replitationspartner
+- Property Version Number:
+    - Nicht Server-spezifisch -> Gehört zu spezifischem Attribut eines AD-Objektes
+    - Wird initialisiert, sobald Attribut einen Wert erhält
+    - Erhält Attribut anderen Wert zu, wird auch Property Version Number erhöht
+    - Ist Property Version Number beim Empfang durch DC ungleich der eigenen gespeicherten: Jüngerer Wert wird genommen
+    - Sind zwei Property Version Numbers identisch, gilt diejenige mit dem jüngeren Zeitstempel
 
-Stand: S.41
+
+AD Replikation – Standortinterne (intrasite) und Standortübergreifende (intersite) Replikation:
+- Frage des richtigen Timings:
+    - Einerseits; Nicht sinnvoll, Änderungen sofort zu replizieren
+    - Andererseits: Änderungen müssen zeitnah bekannt gegeben werden (z.B. damit gelöschte Objekte nicht zu lange in Replika vorhanden sind)
+- Knowledge Consistency Checker (KCC)
+    - Soll vernünftige Replikation ermöglichen
+    - Ist als Dienst auf jedem DC implementiert
+    - Ermittelt Replikationstopologie anhand von benötiger Bandbreite und Häufigkeit auftretender Änderungen
+    - Standardmäßig berechnet KCC Replikationstopologie alle 15 Minuten neu (kann auch vom Admin manuell ausgelöst werden)
+- Intrasite:
+    - KCC geht davon aus, dass ein DC 2-3 Replikationsverbindungen zu anderen DCs hat -> Daraus entsteht bidirektionaler Ring für Replikationstopologie
+    - Replikationen findet in sehr kleinen Abständen statt
+    - Ändert DC einen Wert, teilt er nach Ablauf eines Timers einem Replikationspartner mit, dass Änderungen vorliegen -> Dieser stösst Replikation an
+    - Um gleichzeitige Replikationsanforderungen weiterer DCs zu verhindern, erfolgt Benachrichtigung an weiteren DC erst nach Wartezeit
+    - Bsp: Win2000: Timer 300 sec, Wartezeit 30 Sec; Win2003: Timer 15 sec, Wartezeit 3 sec
+    - Wichtige Änderungen werden sofort angezeigt (z.B. Kennwortänderungen und Kontosperrungen)
+- Intersite:
+    - Annahme: Bei Intersite Verbindungen steht niedrigere Bitrate für Replikationen zur Verfügung als bei Intrasite
+    - Deshalb: KCC wählt pro Standort nur einen Replikationspartner aus (Bridgehead-Server); Admin kann bevorzugte Bridgehead Server kennzeichnen
+    - Bridgehead-Server wickeln Replikation zwischen zwei Standorten ab
+    - Replikationsinformation wird komprimiert
+    - Bridgehead-Server sammelt Änderungen der DCs seines Standorts
+    - Zusätzlich wählt KCC einen DC aus, der Intersite-Replikationstopologie überprüft und Replikationsverbindungen für Bridgehead-Server verwaltet (ISTG)
+    - Standardmäßig: Replikation zwischen Bridgehead-Servern alle 180 min
+
+Stand: S.46
