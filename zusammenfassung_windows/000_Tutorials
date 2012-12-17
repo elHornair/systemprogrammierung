@@ -1,0 +1,67 @@
+
+
+Server als ActiveDirectory Domain Controller promoten:
+- Präambeln
+    - Benötigt fixe IP Adresse
+    - DNS auf Loopback setzen / Oder IP von Server selbst angeben
+    - Hostname definieren
+- Commandline:
+    - dcpromo
+    - Erweiterte Installation
+    - Next
+    - Neue Domäne in neuer Gesamststruktur erstellen
+    - Full qualified Domain Namen angeben (mydom.ch)
+    - Netbios Namen bestätgigen
+    - Gesamtstrukturfunktionsebenen festlegen: Windows Server 2008 R2 oder neuer
+    - DNS Server mit installieren; Vorgang fortsetzen
+    - PW: mydompw123?
+
+DC User erstellen:
+- Commandline:
+    - net user testuser * /add (Sternchen sorgt für PW-Promt)
+        - PW eingeben (mypw)
+    - REDIRUSR ou=DomainUsers,dc=netgeek,dc=ch
+
+
+BDC installieren (Backup Domain Controller)
+- Auf 2. Maschine
+- Präambeln:
+    - Statische IP
+    - Hostname
+    - DNS auf PDC
+- Commandline
+    - dcpromo
+    - Advanced installation
+    - Existing forest, Add a dc to an existing domain
+    - Domäne und Domänenadmin inkl Passwort eingeben
+    - Domain auswählen
+    - Default-first-name als Standort auswählen
+-> AD Rollen übertragen
+    - ntdsutil
+        - partition management:
+            - connections:
+                - connect to server
+
+
+Gruppenrichtlinieneinstellungen:
+- Administrative Tools -> Edit Group policy
+
+
+AD OU einrichten:
+- MMC starten
+- File -> Add/Remove Snap-In -> ActiveDirectory Einträge hinzufügen -> bestätigen
+- AD Users and Computers -> Rechtsklick auf mydomain.ch -> New -> OU -> Name eingeben
+
+
+AD User hinzufügen:
+- MMC starten
+- AD Users and Computers -> Rechtsklick auf mydomain.ch -> New -> User -> Daten eingeben (testpw123?)
+
+
+User zu OU hinzufügen:
+- Dran'n'Drop
+
+
+Benutzer Anmeldung am AD ermöglichen:
+- "Group Policy Management" (Tool) öffen
+- Domain auswählen; Domain Controllers; Default Domain Controllers Policy -> Add -> User auswählen
