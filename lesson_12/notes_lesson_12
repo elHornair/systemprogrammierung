@@ -1,0 +1,18 @@
+-> slide 75
+
+Gruppenrichtlinien:
+- Konfigurationsanweisungen für Computer- / Benutzerkonten
+- Können verbunden werden mit Domänen, Standorten und OUs
+- Konfigurierbar im Kontext "Eigenschaften" eines AD-Objektes
+- Vererbung (von oben nach unten) -> Kann von untergeordneten Richtlinien ausgesetzt werden
+- Überschreiben (von unten nach oben) -> Kann von übergeordneten Richtlinien unterbunden werden
+- Snap In "Richtlinienergebnissatz" ermöglicht Kontrolle, ob eine Richtlinie angewandt wurde
+- ...?
+
+
+
+-> neue präsi (005_Gruppenrichtlinien) ab slide 3 -> ganze präsi durchgemacht
+
+-> übung "arbeiten mit gruppenrichtlinien"
+
+
