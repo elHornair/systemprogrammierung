@@ -69,4 +69,70 @@ AD Replikation – Standortinterne (intrasite) und Standortübergreifende (inter
     - Zusätzlich wählt KCC einen DC aus, der Intersite-Replikationstopologie überprüft und Replikationsverbindungen für Bridgehead-Server verwaltet (ISTG)
     - Standardmäßig: Replikation zwischen Bridgehead-Servern alle 180 min
 
+AD Replikation – Der Tombstone Faktor:
+- Löschen von Objekten hat besondere Bedeutung
+    - Objekte können auf jedem DC gelöscht werden
+    - Alle DCs müssen über Löschvorgängen informiert werden
+- Vorgehen beim Löschen:
+    - Gelöschtes Objekt wird mit Kennzeichen Tombstone (Grabstein) versehen und in speziellen Container verschoben
+    - Tombstone-Lifetime gibt an, wann Objekt tatsächlich gelöscht wird (Win2003 SP2 180 Tage)
+    - Ziel: Auch nach sehr langer Zeit zwischen Replikationen soll noch Info existieren, dass Objekt auch aus anderen Replika zu löschen ist
+    - Nebeneffekte können eintreten, wenn ein DC während Tombstone-Lifetime keine Replikation durchführt, z.B. wenn...
+        - ... ein DC lange Zeit keine Verbindung zum Restnetz hatte
+        - ... eine Datensicherung einer AD Datenbank eingespielt wird
+
+
+Funktionsebenen für Domänen und Gesamtstruktur:
+- Die Funktionen im Zusammenhang mit AD werden von OS-Version zu OS-Version erweitert
+- Funktionsebenen beschreiben, welche Features benutzt werden können (Kompatibilität mit früheren Versionen)
+- Anhand von OS-Version der DCs kann ermittelt werden, welche Funktionsebene erreicht wird (Version von Clients spielt hier keine Rolle)
+- Domänenfunktionsebene spezifiziert Modus, in dem AD einer Domäne arbeitet
+    - Heraufstufen geht nur, wenn alle DC der Domäne entsprechende OS-Version installiert haben
+- Gesamtstrukturfunktionsebene gibt an, in welchem Modus Gesamtstruktur eines AD operiert
+    - Heraufstufen geht nur, wenn alle Domänen der Gesamtstruktur jeweils eine bestimme Domänenfunktionsebene haben
+- Die Heraufstufung einer Domäne sowie der Gesamtstruktur ist irreversibel
+- HowTo Heraufstufung von Domänen:
+    - Anmeldung als Domänen-Admin
+    - MMC Snap-in AD Benutzer und Computer oder Snap-in AD Domänen und Vertrauensstellungen
+- HowTo Heraufstufung von Gesamtstrukturen:
+    - Anmeldung als Organisations-Admin
+    - MMC Snap-in AD Domänen und Vertrauensstellungen
+- Domänenfunktionsebenen (aufsteigend):
+    - Windows 2000 gemischt
+    - Windows 2000 pur
+    - Windows Server 2003
+    - Windows 2008
+    -> Details, was die einzelnen Ebenen bedeuten: 003_AD-Basics.pdf, Slides 48-51
+- Gesamtstrukturfunktionsebenen (aufsteigend):
+    - Windows 2000
+    - Spezialfall: Modell Windows Server 2003 interim (siehe Slide 53)
+    - Windows 2003
+    - Windows 2008
+    -> Details, was die einzelnen Ebenen bedeuten: 003_AD-Basics.pdf, Slide 52
+
+
+Betriebsmaster (FSMOs):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Stand: S.46
