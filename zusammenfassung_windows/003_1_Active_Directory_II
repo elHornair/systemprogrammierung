@@ -69,6 +69,7 @@ AD Replikation – Standortinterne (intrasite) und Standortübergreifende (inter
     - Zusätzlich wählt KCC einen DC aus, der Intersite-Replikationstopologie überprüft und Replikationsverbindungen für Bridgehead-Server verwaltet (ISTG)
     - Standardmäßig: Replikation zwischen Bridgehead-Servern alle 180 min
 
+
 AD Replikation – Der Tombstone Faktor:
 - Löschen von Objekten hat besondere Bedeutung
     - Objekte können auf jedem DC gelöscht werden
@@ -81,6 +82,9 @@ AD Replikation – Der Tombstone Faktor:
         - ... ein DC lange Zeit keine Verbindung zum Restnetz hatte
         - ... eine Datensicherung einer AD Datenbank eingespielt wird
 
+
+Active Directory (AD) - Diverses
+**************************************************
 
 Funktionsebenen für Domänen und Gesamtstruktur:
 - Die Funktionen im Zusammenhang mit AD werden von OS-Version zu OS-Version erweitert
@@ -112,27 +116,48 @@ Funktionsebenen für Domänen und Gesamtstruktur:
 
 
 Betriebsmaster (FSMOs):
+- FSMO -> Flexible Single Master Operations
+- Multimaster-Replikation kann vereinzelt zu Konflikten führen (siehe Replikation)
+- Sollen diese Konflikte nicht akzeptiert werden, werden DCs mit besonderen Aufgaben versehen, um solche Konflikte zu vermeiden
+- Betriebsmaster sind pro Gesamtstruktur/Domäne einmalig (um Replikation/Synchronisation für diese Funktion zu vermeiden)
+- Falls Betriebsmaster-DC seinen Dienst nicht wahrnehmen kann (z.B. wegen Systemarbeiten), muss Admin Dienst auf anderen DC verlagern (cmd: ntdsutil)
+- Betriebsmaster-Funktionen für Gesamtstruktur:
+    - Schemamaster: Überwacht Änderungen und Replikation der Schemapartition des AD
+    - Domänennamen-Master: Überwacht Änderungen (Hinzufügen, Entfernen, Umbenennen) an Domänennamen der Gesamtstruktur
+- Betriebsmaster Funktionen für Domänen:
+    - RID Master: Relative ID wird an DCs verteilt. RID bildet zusammen mit domänenspezifischer SID die eindeutige Security ID eines Objektes
+    - PDC Emulation: Emuliert auf Windows 200X Server Verhalten eines NT PDC
+    - Infrastruktur Master: Verantwortlich für alle Änderungen an domänenübergreifenden Zuordnungen (z.B. Gruppenmitgliedschaften)
+- Erste DC einer Gesamtstruktur / Domäne nimmt automatisch alle Rollen ein (diese können manuell anderen DCs zugeteilt werden)
+- Herausfinden, welche DCs welche FSMO Funktion übernehmen: Befehl 'netdom', Parameter 'query fsmo'
 
 
+Vordefinierte Benutzer:
+- Abhängig von der Rolle des Servers:
+    - DC:
+        - Auf erstem DC einer Domäne werden die vordefinierten Benutzer im AD angelegt
+        - Die weiteren DCs der Domäne nutzen die bereits vorhandenen im AD
+    - Mitgliedserver:
+        - Legen die vordefinierten Benutzer in Ihrer eigenen SAM Datenbank ab
+        - Als Domänenmitglied können sie die vordefinierten Benutzer der Domäne ebenso nutzen
+    - Eigenständige Server:
+        - Legen die vordefinierten Benutzer in ihrer eigenen SAM Datenbank ab
+- Im AD werden diese Benutzer im Container "Users" angelegt
+    - Konfigurierbar ab Win2003
+    - Konfiguration sinnvoll, weil:
+        - Container Users ist keine OU, d.h. er wird über Attribut "CN" referenziert
+        - Gruppenrichtlinienobjekte lassen sich allerdings nur an Container vom Typ "OU" binden
+    - Änderung des Containers: cmd 'redirusr'
+- Benutzer:
+    - Administrator:
+        - Weitestgehende Berechtigungen zur Verwaltung von Server/Domäne
+        - Kann nur umbenannt, nicht gelöscht werden
+    - Gast:
+        - Besitzt kein Kennwort
+        - Nach Einrichtung deaktiviert
+    - Support_388945a0
+        - Zur Verwendung mit Hilfe- und Support-Center vorgesehener Benutzer
+        - Nach Einrichtung deaktiviert
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Stand: S.46
+Stand: S.60
