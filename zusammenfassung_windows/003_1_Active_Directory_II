@@ -160,4 +160,60 @@ Vordefinierte Benutzer:
         - Nach Einrichtung deaktiviert
 
 
-Stand: S.60
+Gruppen, Gruppentypen und Gruppenbereiche:
+- Gruppen: Zusammenfassung von Objekten (Sicherheitsprincipals) für übersichtliche Rechtevergabe
+- Gruppenmitglieder: Objekte des Typs Benutzer sowie bestimme andere Gruppen
+- Gruppentypen:
+    - Sicherheitsgruppen: Gruppen, denen sich Berechtigungen (z.B. im Dateisystem) erteilen lassen -> Sicherheitsgruppen sind Sicherheitsprincipals
+    - Verteilergruppen: Verwendung als Mailverteiler im Zusammenhang mit Mailsoftware, z.B. Exchange
+- Im Folgenden werden nur Sicherheitsgruppen betrachtet
+- Gruppenbereiche:
+    - Lokal, lokale Domäne, global, universal
+    - Stehen vollumfänglich zur Verfügung, wenn einheitliche Funktionsebene (kein Mix oder Interim) ab Win2000 betrieben wird
+    - Einschränkungen im gemischten Modus:
+        - Keine universellen Gruppen
+        - Lokale Domänengruppen können nur auf DCs verwendet werden, keine Berechtigungsvergabe auf Basis dieser Gruppen auf Domänenmitglieder
+        - Keine vollständige Verschachtelung: Lokale Domänengruppen können nur Benutzern und globalen Gruppen zugeordnet werden
+        - Keine Konvertierung von Gruppen kann (z.B. lokale in universelle Gruppen)
+    - Lokale Gruppen:
+        - Werden in lokaler SAM Datenbank eines Servers gespeichert
+        - Lokale Gruppen können nicht auf anderen Rechnern verwendet werden
+        - Mitglieder verfügen über Berechtigungen für Ressourcen auf Computer, auf dem die Gruppe implementiert ist
+        - Kann keine anderen lokalen Gruppen als Mitglieder haben, sondern nur Benutzer und globale Gruppen
+        - Benutzer als potentielle Gruppenmitglieder:
+            - Auf eigenständigen Servern:
+                - Nur Benutzer aus lokaler SAM Datenbank
+            - Auf Domainmitgliedern:
+                - Benutzer aus lokaler SAM Datenbank
+                - Benutzer aus Domänen, die über Vertrauensstellungen verfügbar sind (u.A. Benutzer der Gesamtstruktur)
+    - Lokale Domänengruppen:
+        - Werden im AD einer Domäne verwaltet
+        - Mitglieder können aus allen Domänen der Gesamtstruktur sowie aus vertrauten Domänen stammen
+        - Es können nur Berechtigungen auf Ressourcen der eigenen Domäne vergeben werden
+    - Globale Gruppen:
+        - Werden automatisch auf DCs anderer Domänen in Gesamtstruktur repliziert
+        - Können Mitglied in lokalen Gruppen sein -> Eignen sich deshalb ideal zur Berechtigungsvergabe auf beliebige Ressourcen in Gesamtstruktur
+        - Mögliche Mitglieder: Alle Benutzer, Computer, Kontakte der eigenen Domäne
+        - Gruppen können nicht Mitglieder werden
+        - Jeder Windows Server und Windows Professional Client ab Version 2000 kennen alle globalen Gruppen der Gesamtstruktur
+    - Universelle Gruppen:
+        - Werden im AD angelegt
+        - Mitglieder können aus jeder Domäne der Gesamtstruktur oder aus vertrauter Domäne stammen
+        - Eignen sich ideal, um Benutzern domänenübergreifend Dinge tun zu lassen oder auf bestimmte Ressourcen zugreifen zu lassen
+        - Mitglieder werden im GC geführt -> Verfügbarkeit des GC bei Anmeldung ist deshalb zwingend
+        - Fazit: Allen Benutzern der Gesamtstruktur können Berechtigungen auf Ressourcen der Gesamtstruktur gegeben werden
+- Vordefinierte lokale Gruppen und lokale Domänengruppen:
+    - Administratoren:
+        - Delegation von Administrationsberechtigungen
+        - Enthält Benutzer Administrator
+        - Auf DCs enthält sie ausserdem die globale Gruppe Organisations-Admins
+    - Benutzer:
+        - Enthält alle Benutzer von Domäne/Servers an
+        - Enthält die globale Gruppe Domänen-Benutzer
+        - Sehr eingeschränkte Berechtigungen
+    - Hauptbenutzer:
+        - Nur in lokaler SAM Datenbank, nicht im AD verfügbar
+        - Weitreichende Berechtigungen auf lokalem Computer: Softwareinstallation, Verwaltung von vordefinierten Gruppen, Benutzern, Hauptbenutzern, Gästen
+
+
+Stand: S.66/67
