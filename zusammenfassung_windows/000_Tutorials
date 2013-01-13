@@ -1,5 +1,3 @@
-
-
 Server als ActiveDirectory Domain Controller promoten:
 - Präambeln
     - Benötigt fixe IP Adresse
@@ -65,3 +63,13 @@ User zu OU hinzufügen:
 Benutzer Anmeldung am AD ermöglichen:
 - "Group Policy Management" (Tool) öffen
 - Domain auswählen; Domain Controllers; Default Domain Controllers Policy -> Add -> User auswählen
+
+
+Policy updaten:
+- gpupdate /force /wait:0
+
+-------------------------------------------------------------------------
+Notes Marc:
+NTDSUTIL / NETDOM/ NET/ Group Policy Management: Weshalb ist es wichtig den Betriebsmaster zu wechseln? Keine Funktionalität zum automatischen Wechseln des Betriebsmasters. NTDSUTIL kann auch Snapshot vom AD machen und dem LDAP zur Verfügung stellen.
+
+NET: User Gruppen anlegen/ Active Directory herunterfahren/ lokale Dienste Service herunterfahren/ Net view freigaben anzeigen lassen/ net user/ net group/ Viele funktionen
