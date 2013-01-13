@@ -284,3 +284,4 @@ Gruppenrichtlinien:
 - SnapIn "Richtlinienergebnissatz" ermöglicht Kontrolle, ob eine Richtlinie angewandt wurde
 - Kommando "gpupdate" ermöglicht sofortiges Durchsetzten der Gruppenrichtlinien (ohne auf nächstes Update zu warten)
 - Prinzipiell werden Gruppenrichtlinien nach Replikation sofort aktiv (Ausnahme Ordnerumleitungen)
+- Details und Anleitung zur Erstellung von Gruppenrichtlinien: 005_Gruppenrichtlinien-v3.pdf
