@@ -1,0 +1,12 @@
+Active Directory (AD) - Gruppenrichtlinien
+**************************************************
+
+- Konfigurationsanweisungen für Computer- und Benutzerkonten
+- Können verbunden werden mit Domänen, Standorten und OUs (konfigurierbar im Kontext "Eigenschaften" dieser Objektes)
+- Vererbung (von oben nach unten) -> Kann von untergeordneten Richtlinien ausgesetzt werden
+- Überschreiben (von unten nach oben) -> Kann von übergeordneten Richtlinien unterbunden werden
+- SnapIn "Richtlinienergebnissatz" ermöglicht Kontrolle, ob eine Richtlinie angewandt wurde
+- Kommando "gpupdate" ermöglicht sofortiges Durchsetzten der Gruppenrichtlinien (ohne auf nächstes Update zu warten)
+- Prinzipiell werden Gruppenrichtlinien nach Replikation sofort aktiv (Ausnahme Ordnerumleitungen)
+- Werden mit DC repliziert (muss im Directory verteilt werden und einzelnen Domänenmitgliedern zur Verfügung stehen)
+- Details und Anleitung zur Erstellung von Gruppenrichtlinien: 005_Gruppenrichtlinien-v3.pdf
