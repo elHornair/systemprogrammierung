@@ -109,7 +109,7 @@ Funktionsebenen für Domänen und Gesamtstruktur:
     -> Details, was die einzelnen Ebenen bedeuten: 003_AD-Basics.pdf, Slides 48-51
 - Gesamtstrukturfunktionsebenen (aufsteigend):
     - Windows 2000
-    - Spezialfall: Modell Windows Server 2003 interim (siehe Slide 53)
+    - Spezialfall: Modell Windows Server 2003 interim (siehe 003_AD-Basics.pdf, Slide 53)
     - Windows 2003
     - Windows 2008
     -> Details, was die einzelnen Ebenen bedeuten: 003_AD-Basics.pdf, Slide 52
@@ -174,7 +174,7 @@ Gruppen, Gruppentypen und Gruppenbereiche:
         - Keine universellen Gruppen
         - Lokale Domänengruppen können nur auf DCs verwendet werden, keine Berechtigungsvergabe auf Basis dieser Gruppen auf Domänenmitglieder
         - Keine vollständige Verschachtelung: Lokale Domänengruppen können nur Benutzern und globalen Gruppen zugeordnet werden
-        - Keine Konvertierung von Gruppen kann (z.B. lokale in universelle Gruppen)
+        - Keine Konvertierung von Gruppen kann nicht stattfinden (z.B. lokale in universelle Gruppen)
     - Lokale Gruppen:
         - Werden in lokaler SAM Datenbank eines Servers gespeichert
         - Lokale Gruppen können nicht auf anderen Rechnern verwendet werden
@@ -208,12 +208,79 @@ Gruppen, Gruppentypen und Gruppenbereiche:
         - Enthält Benutzer Administrator
         - Auf DCs enthält sie ausserdem die globale Gruppe Organisations-Admins
     - Benutzer:
-        - Enthält alle Benutzer von Domäne/Servers an
+        - Enthält alle Benutzer von Domäne/Server
         - Enthält die globale Gruppe Domänen-Benutzer
         - Sehr eingeschränkte Berechtigungen
     - Hauptbenutzer:
         - Nur in lokaler SAM Datenbank, nicht im AD verfügbar
         - Weitreichende Berechtigungen auf lokalem Computer: Softwareinstallation, Verwaltung von vordefinierten Gruppen, Benutzern, Hauptbenutzern, Gästen
+    - Remotedesktopbenutzer:
+        - Mitglieder erhalten Berechtigung Terminalserverdienste auf Rechner/Domäne zu nutzen
+    - Weitere:
+        - Druck-, Konten-, Netzwerkkonfigurations-, Server-, Sicherungs- und Replikations-Operatoren
+        - Operatoren zur Erstellung eingehender Gesamtstrukturvertrauensstellungen
+        - Weitere Vordefinierte Gruppen dienen der Rechtevergabe bzw. Delegation von Administrationsberechtigungen
+- Vordefinierte globale Gruppen:
+    - Sind im AD im Container Users angelegt
+    - In eigenständigem Server werden viele der globalen Gruppen als lokale Gruppen in SAM angelegt
+    - Beziehen sich auf die eigene Domäne. Können also innerhalb der Domäne in andere OUs, nicht aber in andere Domänen verschoben werden
+    - Domänen-Admins:
+        - Erlaubt Verwaltung der Domäne
+        - Ist Mitglied in den lokalen (Domänen-)Gruppen Administratoren
+    - Domänen-Benutzer:
+        - Administrator sowie alle Benutzer der Domäne
+        - Ist Mitglied in den lokalen (Domänen-)Gruppen Benutzer
+    - Domänencomputer:
+        - Alle Computerkonten der Domäne
+    - Domänencontroller:
+        - Alle DCs der Domäne
+    - Organisations-Admins:
+        - Wird nur in der Stammdomäne der Gesamtstruktur angelegt
+        - Mitglieder besitzen Administrationsrechte auf alle Domänen der Gesamtstruktur
+        - Ist Mitglied in den lokalen (Domänen-)Gruppen Administratoren
+    - Schema Admins:
+        - Wird nur in der Stammdomäne der Gesamtstruktur angelegt
+        - Mitglieder haben die Berechtigung, AD Schema zu modifizieren
+- Sondergruppen:
+    - Werden vom Betriebssystem selbständig verwaltet
+    - Dienen der Berechtigungsvergabe auf Objekte im AD, der Registry und in NTFS etc.
+    - Es können keine Mitglieder manuell hinzugefügt oder gelöscht werden
+    - Beispiele:
+        - Legt Benutzer Datei an, ist er automatisch in Gruppe ERSTELLER-BESITZER der Datei. Berechtigungen können nun explizit vergeben werden
+        - Sollen alle Benutzer auf Drucker Zugriff erlangen, werden Berechtigungen der Gruppe "Jeder" zugeordnet jeder authentifizierte Benutzer)
 
 
-Stand: S.66/67
+Computerkonten im AD:
+- Mindestens ein Computerkonto weist jede AD Domäne auf: Erster DC
+- Für jeden Mitgliedserver und jede Arbeitsstation wird zusätzliches Konto angelegt
+- DCs werden automatisch in der OU Domain Controllers platziert
+- Mitgliedsserver und Arbeitsstationen werden im Container Computers erstellt
+- OU Domain Controllers ist automatisch mit Domänencontroller-Richtlinie (Gruppenrichtlinienobjekt Default Domain Controllers Policy) verknüpft
+- Der Container Computers ist (im Gegensatz zu Domain Controllers) keine OU (es ist also nicht möglich, Gruppenrichtlinien damit zu verknüpfen)
+
+
+AD und DNS:
+- AD verwendet für eine Domäne denselben Namespace wie DNS
+- AD beruht darauf dass:
+    - DCs ihre Dienste (LDAP, GC, KDC für Kerberos) im DNS eintragen
+    - Clients diese Infos beim DNS Server abfragen und sie für Anmeldung an der Domäne verwenden können
+- Verwendet werden dazu Ressourceeinträge vom Typ SRV
+- SRV Einträge werden dynamisch eingetragen (Dienst NETLOGON trägt bei jedem Start die Dienste im DNS ein)
+- Voraussetzungen:
+    - DNS Server muss SRV Einträge unterstützen (RFC 2782)
+    - DNS Server muss dynamische Updates zulassen
+        -> sonst müssen die Einträge manuell im DNS-Server registriert werden
+        -> Auf jedem DC in der Datei %Systemroot%\SYSTEM32\CONFIG\NETLOGON.DNS
+- Clients aktualisieren ihre Einträge über DDNS-fähigen DHCP-Client (ab Windows 2000) (geschieht auch, wenn sie statische IP-Konfiguration haben)
+- Registrierungen der Einträge finden immer an einem primären Server statt
+- Details (u.a. Replikationsstrategie): Siehe 003_AD-Basics.pdf, Slide 72-74
+
+
+Gruppenrichtlinien:
+- Konfigurationsanweisungen für Computer- und Benutzerkonten
+- Können verbunden werden mit Domänen, Standorten und OUs (konfigurierbar im Kontext "Eigenschaften" dieser Objektes)
+- Vererbung (von oben nach unten) -> Kann von untergeordneten Richtlinien ausgesetzt werden
+- Überschreiben (von unten nach oben) -> Kann von übergeordneten Richtlinien unterbunden werden
+- SnapIn "Richtlinienergebnissatz" ermöglicht Kontrolle, ob eine Richtlinie angewandt wurde
+- Kommando "gpupdate" ermöglicht sofortiges Durchsetzten der Gruppenrichtlinien (ohne auf nächstes Update zu warten)
+- Prinzipiell werden Gruppenrichtlinien nach Replikation sofort aktiv (Ausnahme Ordnerumleitungen)
