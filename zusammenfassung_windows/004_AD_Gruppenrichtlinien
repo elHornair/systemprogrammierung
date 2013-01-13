@@ -1,6 +1,7 @@
 Active Directory (AD) - Gruppenrichtlinien
 **************************************************
 
+Allgemein:
 - Konfigurationsanweisungen für Computer- und Benutzerkonten
 - Können verbunden werden mit Domänen, Standorten und OUs (konfigurierbar im Kontext "Eigenschaften" dieser Objektes)
 - Vererbung (von oben nach unten) -> Kann von untergeordneten Richtlinien ausgesetzt werden
@@ -9,4 +10,49 @@ Active Directory (AD) - Gruppenrichtlinien
 - Kommando "gpupdate" ermöglicht sofortiges Durchsetzten der Gruppenrichtlinien (ohne auf nächstes Update zu warten)
 - Prinzipiell werden Gruppenrichtlinien nach Replikation sofort aktiv (Ausnahme Ordnerumleitungen)
 - Werden mit DC repliziert (muss im Directory verteilt werden und einzelnen Domänenmitgliedern zur Verfügung stehen)
-- Details und Anleitung zur Erstellung von Gruppenrichtlinien: 005_Gruppenrichtlinien-v3.pdf
+
+
+Struktur:
+- Gruppenrichtlinienobjekte (GPOs)
+    - Zusammenstellung von Gruppenrichtlinieneinstellungen
+    - Werden Domänenweit (nicht Forest-weit) in Gruppenrichtliniencontainern (GPCs) im AD gespeichert
+    - Können auch für lokale, nicht domainintegrierte Computer erstellt und lokal gespeichert werden (gpedit.msc)
+- Gruppenrichtlinienverknüpfungen
+    - Für erstelle GPO kann Verknüpfung zu Objekt (Domäne, Standort, OU) hergestellt werden
+    - Verknüpfung wirkt auf Objekt wie eigenes GPO
+- Gruppenrichtlinienvorlage (GPT)
+    - Ist Ordnerstruktur auf den DCs einer Domäne
+    - %systemroot%\SYSVOL\sysvol\<Domänenname>Policies
+    - Wird erzeugt, wenn neue GPO erstellt wird
+    - Speichert Einstellungen einer GPO
+
+
+Gruppenrichtlinien erstellen und Anwenden:
+- Siehe 005_Gruppenrichtlinien-v3.pdf, Slide 4 - 11 (auch Beispiele für Logon/Startup Skripte)
+
+
+Loopback:
+- Problemstellung:
+    - In der OU "Terminalservers" sollen Richtlinien definiert werden, die Benutzereinstellungen betreffen
+    - Allerdings nur dann, wenn die Benutzer sich an einem Terminalserver anmelden
+    -> Problem: Sind die Benutzer nicht in der OU "Terminalservers" definiert, passiert Folgendes:
+        - Der Computer aus der OU "Terminalservers" liest den Anteil Computerkonfiguration der Richtlinie "TerminalServer Einschränkungen"
+        - Der Computer kann als Objekt keine Benutzereinstellungen übernehmen
+        - Der Benutzer aus der OU "Meine Firma" liest den Anteil Benutzerkonfiguration der Richtlinie "Meine Std. Firmenvorgaben"
+        - Der Benutzer kann als Objekt keine Computereinstellungen übernehmen
+- Lösung:
+    - In der OU "Terminalservers" wird Loopback-Richtlinie definiert
+    - Einzige Einstellung der Richtlinie:
+        - Computerkonfiguration\Administrative Vorlagen\System\Gruppenrichtlinien\Loopbackverarbeitungsmodus für Benutzergruppenrichtlinie = aktiviert
+    - Damit verändert sich das Auswertungsverhalten wie folgt:
+        - Der Computer aus der OU "Terminalservers" liest den Anteil Computerkonfiguration der Richtlinie "Loopbackverarbeitungsmodus aktiviert"
+        - Der Computer aus der OU "Terminalservers" liest den Anteil Computerkonfiguration der Richtlinie "TerminalServer Einschränkungen"
+        - Der Benutzer aus der OU "Meine Firma" liest den Anteil Benutzerkonfiguration der Richtlinie "Meine Std. Firmenvorgaben"
+        - Der Benutzer aus der OU "Meine Firma" liest den Anteil Benutzerkonfiguration der Richtlinie "TerminalServer Einschränkungen"
+- Zwei Modi für Loopback-Richtlinie:
+    - Zusammenführen (Merge):
+        - Alle vorhandenen Benutzerrichtlinien des Benutzerobjekts werden mit denen des Computerobjekts zusammengeführt
+        - Bei Widerspruch: Einstellungen aus der Benutzerkonfiguration der Computerrichtlinie können Einstellungen des Benutzerobjekts überschreiben
+    - Ersetzen (Replace):
+        - Alle Benutzereinstellungen des Benutzerobjekts werden ignoriert und verworfen
+        - Es kommen nur die Einstellungen der Benutzerkonfiguration des Computerobjekts zum Einsatz
