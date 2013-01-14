@@ -1,0 +1,59 @@
+Dateisysteme, ACL
+**************************************************
+
+Begriffe:
+- ACL: Access Control List
+- ACE: Access Control Entry, Eintrag in ACL
+
+
+Zugriffssteuerung Dateien und Verzeichnisse:
+- Zugriffsberechtigungen/-verweigerungen eines Objektes (Datei, Verzeichnis) werden in dessen ACL gehalten
+- Zuweisung von Berechtigungen erfolgt über ACE innerhalb der ACL
+- Zwei Bereiche der ACL:
+    - Discretional Access Control List (DACL): Beinhaltet ACEs, die jeweils eine(n) Benutzer/Gruppe mit einem gewährten/verweigerten Zugriffsrecht enthalten
+    - System Access Control List (SACL): Gibt an, welche Zugriffe auf ein Objekt überwacht werden sollen
+- Ein(e) Benutzer/Gruppe kann von mehreren ACEs betroffen sein
+- Zugriffsverweigerung:
+    - Verweigern hat Vorrang vor Gewähren des gleichen Rechts
+    -> Bsp: Hat A das Recht, X zu lesen und über eine Gruppe das Verbot, X zu lesen, darf er X nicht lesen
+- Vererbung von Berechtigungen:
+    - Jedes Objekt erbt die Berechtigungen des Übergeordneten Objektes (=> implizite Berechtigung)
+    -> Verzeichnis Berechtigungen des übergeordneten Verzeichnisses
+    - Vererbung kann pro Objekt ausgeschaltet werden
+    - Im UI: Vererbte Berechtigungen grau hinterlegt
+    - Explizite Berechtigungen (direkt dem Objekt vergeben) haben immer Vorrang gegenüber Impliziten (Geerbten)
+    -> Bsp:
+        - A erhält im übergeordneten Ordner das Recht, X zu lesen und zu beschreiben
+        - Vererbung ist konfiguriert
+        - Im untergeordneten Ordner erhält X nur das Recht, X zu lesen
+        - Effektiv darf A X nur lesen, da die expliziten Rechte Vorrang haben (und die Impliziten vollumfänglich überschreiben -> kein Merge)
+- Besitzer und Besitzrechte:
+    - Erzeuger eines Objektes ist automatisch dessen Besitzer
+    - SID des Besitzers ist in Sicherheitsbeschreibung des Objekts gespeichert
+    - Übertragung des Besitzrechts: Besitzer muss anderem Benutzer Recht "Besitz übernehmen" geben. Dieser muss dieses Recht dann ausüben
+    - Nur Besitzer und Administrator dürfen Berechtigungen auf Objekt vergeben
+    - Recht "Berechtigungen ändern" kann aber explizit auf andere Benutzer übertragen werden
+    - "Berechtigungen ändern" kann Administrator entzogen werden
+    - Administrator kann aber immer den Besitz eines Objekts übernehmen
+- Effektive Berechtigungen:
+    - Durch komplexe Rechtevergabe oft schwierig, effektive Zugriffsrechte von Benutzer A auf Objekt X schnell zu ermitteln
+    - Aber: Möglichkeit, effektive Berechtigungen von A auf X darzustellen
+    - Darstellung von effektiven Berechtigungen berücksichtigt:
+        - Explizite/implizite Berechtigungen
+        - Vererbung
+        - Zugriffsverweigerung
+        - Gruppenmitgliedschaft
+- Ordner- und Dateiberechtigungen:
+    - Ordnerberechtigungen: Beziehen sich rekursiv auf alle momentanen und zukünftigen Ordnerinhalte
+    - Dateiberechtigungen: Beziehen sich auf konkrete Datei
+    - Für NTFS Dateisystem existieren 14 unterschiedliche Berechtigungen -> Diese werden beschränkte Berechtigungen genannt
+        - z.B. Attribute lesen, Datei schreiben, Löschen, Berechtigungen lesen, Besitz übernehmen, ...
+    - Beschränkte Berechtigungen sind atomar, üblicherweise werden allerdings Kombinationen verwendet
+    - Kombinationen: Werden als Ordnerberechtigungen/Dateiberechtigungen bezeichnet
+        - Vollzugriff, Ändern, Lesen & Ausführen, Ordnerinhalte auflisten, Lesen, Schreiben
+- Freigabeberechtigungen:
+    - Beziehen sich auf Zugriff über Netzwerk auf Ordner
+    - Gelten prinzipiell für alle Objekte, die über die Freigabe zugegriffen werden können
+    - Können Berechtigungen auf dem Dateisystem nicht erweitern, höchstens einschränken
+    -> Bsp: A hat Vollzugriff auf X. Auf Freigabe gibt er nur Zugriffrecht Schreiben für Gruppe "Jeder". A darf über Netzwerk selbst nur Schreiben
+- Details und Anweisungen zur Berechtigungsverwaltung im UI: Siehe 006_OS-XX-Dateisysteme-ACL.pdf (ganze Präsi)
