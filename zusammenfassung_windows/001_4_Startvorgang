@@ -56,6 +56,6 @@ Explizites Laden von Treibern über die Registry:
 - Weitere Einträge:
     - Type: 1,2 oder 8 sind Gerätetreiber, 16, 32 oder 256 sind Dienste
     - Group: Treiber oder Dienst gehört zu dieser Gruppe
-    - Tag: Ganze Zahl, die die Ladereihenfolge in der Gruppe angibt
+    - Tag: Ganze Zahl, die die Ladereihenfolge in der Gruppe angibt (Nummer ist eindeutig)
     - ImagePath: Pfad zum Treiber/Dienst. Falls leer, suchen E/A-Manager und Service-Control-Magager in %Systemroot%\System32\Drivers
 - Vorhandene Gruppen: HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\ServiceGroupOrder\List
