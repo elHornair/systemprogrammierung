@@ -104,16 +104,16 @@ Identifikation von Objekten / Objektnamen:
     - Benutzer und Computer sind Sicherheitsprincipals, die eine Authentifizierung und Autorisierung durchlaufen müssen, um auf Objekte zuzugreifen
     - Benutzer müssen durch eine Anmeldung an einer Domäne authentifiziert werden
     - Jedes Benutzerobjekt verfügt über zwei Anmeldenamen
+        - User Principal Name (UPN) -> bessere Option
+            - AD-konforme Namenskonvention basierend auf RFC 822
+            - Anhand des UPN kann Anmeldedienst Domäne selbständig ermitteln
+            - Benutzername + @ + UPN-Suffix (i.d.R. DNS-Name der Domäne)
+            - Beispiel: schmitz@fra.corp.tigg.de
         - SAM Kontoname
             - Kompatibilität zu Windows NT 4.0
             - Flacher Namensraum
             - Anmeldedomäne muss zusätzlich angegeben werden
             - Beispiel: schmitz
-        - User Principal Name (UPN)
-            - AD-konforme Namenskonvention basierend auf RFC 822
-            - Anhand des UPN kann Anmeldedienst Domäne selbständig ermitteln
-            - Benutzername + @ + UPN-Suffix (i.d.R. DNS-Name der Domäne)
-            - Beispiel: schmitz@fra.corp.tigg.de
 
 
 AD Schema:

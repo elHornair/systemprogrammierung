@@ -104,9 +104,10 @@ Scheduling in Windows:
     - 1-15: Variabler, dynamischer Bereich
     - 15-31: Echtzeit-Bereich
 - Zwei Arten von Prioritäten:
-    - Basis-Priorität: Wird vom Erzeugerprozess geerbt
-    - Relative Priorität: Ergänzend zur Basis-Priorität
-- Prio kommt nur dran, wenn keine anderen Aufgaben anstehen, Prio 1-15 können vom OS angepasst werden, Echtzeit-Prozesse nicht
+    - Basispriorität: Wird vom Erzeugerprozess geerbt (Process Priority Class) -> kann von Admin gesetzt werden
+    - Relative Priorität: Ergänzend zur Basispriorität (Zeitkritisch, Maximal, ...) -> nicht durch Admin beeinflussbar
+    -> Tatsächliche Prio ergibt sich durch Kombination der beiden -> siehe S.11 Architektur.pdf
+- Prio 0 kommt nur dran, wenn keine anderen Aufgaben anstehen, Prio 1-15 können vom OS angepasst werden, Echtzeit-Prozesse nicht
 - SetPriorityClass setzt Priorität eines Prozesses
 - SetThreadPriority setzt Priorität eines Threads innerhalb seines Prozesses
 - Quantum:
@@ -116,7 +117,7 @@ Scheduling in Windows:
 - Variable Prioritäten (1-15)
     - Scheduler verwendet Strategien, um "wichtige" Threads zu bevorzugen (z.B. Quantum-Stretching oder Priority-Boost)
     - Quantum-Stretching: Zeitquantum verlängern
-    - Priority-Boost: Priorität temporär hochschrauben (z.B. bei I/O-Ereignissen)
+    - Priority-Boost: Priorität temporär hochschrauben (z.B. bei I/O-Ereignissen) -> Boost nimmt um 1 ab (bzw. zu bei negativem Boost) pro Zeitquantum
     - ABER: Fortschrittsgarantie (alle 3-4 Sekunden werden "benachteiligte" Prozesse hochpriorisiert)
     - Threadpriorität: Prozessesprioritätsklasse + Threadpriorität + Boost
 - Im Echtzeitbereich (16-31):
