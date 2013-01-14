@@ -1,8 +1,14 @@
+Bedingungen:
+- Alles auf Papier, keine digitalen Geräte zugelassen
+
 Windows:
 - Allgemein: Keine Pointy-Clicky-Fragen, nur Theoriefragen
 - Architektur Windows
+- Scheduling
+- Security
+- Startvorgang
 - Active Directory mit allem drum und dran (Konzepte, Beschränkungen, Wirkungsweise)
--> genauer kommt noch
-
-Punkto Gruppenrichtlinien
-- Loopback Geschichte
+- Active Directory: Stammdomänen, explizite Vertrauensstellungen
+- Gruppenrichtlinien (wichtig: Loopback Geschichte)
+- Dateisysteme / ACL
+- Authentifizierung / Kerberos
