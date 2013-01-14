@@ -22,11 +22,16 @@ Zugriffssteuerung Dateien und Verzeichnisse:
     - Vererbung kann pro Objekt ausgeschaltet werden
     - Im UI: Vererbte Berechtigungen grau hinterlegt
     - Explizite Berechtigungen (direkt dem Objekt vergeben) haben immer Vorrang gegenüber Impliziten (Geerbten)
+        -> Diese Regel hat Präzedenz über die "Verbote sind wichtiger, als Berechtigungen"-Regel
+    - Implizit erhaltene Berechtigungen müssen immer explizit weggenommen werden werden, wenn sie nicht gelten sollen (denn es wird gemerged)
     -> Bsp:
         - A erhält im übergeordneten Ordner das Recht, X zu lesen und zu beschreiben
+        - A erhält im übergeordneten Ordner das Verbot, X zu löschen
         - Vererbung ist konfiguriert
-        - Im untergeordneten Ordner erhält X nur das Recht, X zu lesen
-        - Effektiv darf A X nur lesen, da die expliziten Rechte Vorrang haben (und die Impliziten vollumfänglich überschreiben -> kein Merge)
+        - Im untergeordneten Ordner erhält X das Recht, X zu lesen und auszuführen
+        - Effektiv darf A X lesen, beschreiben und ausführen (wegen merge), er darf aber X nicht löschen (wegen implizitem Verbot)
+        - Nun wird im untergeordneten Ordner explizit die Berechtigung zum Löschen erteilt
+        - A darf X nun lesen, beschreiben, ausführen und löschen (denn explizite Berechtigungen sind wichtiger, als Implizite)
 - Besitzer und Besitzrechte:
     - Erzeuger eines Objektes ist automatisch dessen Besitzer
     - SID des Besitzers ist in Sicherheitsbeschreibung des Objekts gespeichert
