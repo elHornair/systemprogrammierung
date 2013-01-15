@@ -29,6 +29,7 @@ AD Replikation – Verzeichnispartitionen:
             - Enthalten anwendungsabhängige Informationen
             - Können alle Objekte der im Schema definierten Klassen enthalten (Ausnahme: Sicherheitsprincipals)
             - Ihre Objekte werden nicht in Global Catalog übernommen
+-> Einzelne Partitionen werden selektiv an einzelne DCs in der eigenen Domäne oder der Gesamtstruktur repliziert
 
 
 AD Replikation – Überwachung von Änderungen:
@@ -58,6 +59,7 @@ AD Replikation – Standortinterne (intrasite) und Standortübergreifende (inter
     - Replikationen findet in sehr kleinen Abständen statt
     - Ändert DC einen Wert, teilt er nach Ablauf eines Timers einem Replikationspartner mit, dass Änderungen vorliegen -> Dieser stösst Replikation an
     - Um gleichzeitige Replikationsanforderungen weiterer DCs zu verhindern, erfolgt Benachrichtigung an weiteren DC erst nach Wartezeit
+    - Auch neu angelegte Objekte werden erst nach Wartezeit repliziert
     - Bsp: Win2000: Timer 300 sec, Wartezeit 30 Sec; Win2003: Timer 15 sec, Wartezeit 3 sec
     - Wichtige Änderungen werden sofort angezeigt (z.B. Kennwortänderungen und Kontosperrungen)
 - Intersite:
