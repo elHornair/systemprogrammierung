@@ -7,7 +7,7 @@ E 4.1:
                 => Bitshift um 12 Stellen, also rechteste 12 Stellen löschen
                 => 110100101011110110 = Blocknummer
     d) Relativadresse = Zugriffsadresse % Blockgröße (mod)
-    e) Die relative Adresse sind die (n-1) rechtesten Speicherbits der Zugriffsadresse
+    e) Die relative Adresse sind die n rechtesten Speicherbits der Zugriffsadresse
     f) Adresse: Hex 34af6784 = Bin 110100101011110110011110000100
        Blockgrösse: 4KB = 2^12
        Relativadresse: Zugriffsadresse % Blockgröße
